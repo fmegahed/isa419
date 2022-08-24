@@ -1,0 +1,21 @@
+# Ignored Folders
+old/
+.Rproj.user/
+*_cache/
+*_files/
+references/
+pptx/
+
+# Ignored file types
+*.aux
+*.bbl
+*.blg
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.toc
+
+# Ignoring large files
+lanl-auth-dataset-1-03.csv

@@ -1,0 +1,113 @@
+---
+title: "My First RMarkdown Report"
+author: "Fadel M. Megahed"
+date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
+output: 
+  html_document:
+    code_folding: show
+    code_download: TRUE
+    number_sections: TRUE
+    paged_df: TRUE
+    toc: TRUE
+    toc_float: TRUE
+    theme: readable
+params:
+  # the parameters for the report is optional and will be often ignored in most
+  # RMarkdown examples you see online; however, it is handy if you will repeat
+  # your analysis for different settings
+  lines_to_skip: 1099999
+  rows_to_read: 100000
+---
+
+
+
+```{r setup, include=FALSE}
+# setup chunk will not be included since include = FALSE
+knitr::opts_chunk$set(echo = TRUE) # default show code and output
+```
+
+
+---
+
+
+# Required Libraries
+
+Insert all the R packages that you have used here.
+```{r packages}
+# libraries
+if(require(reticulate)==FALSE) install.packages('reticulate')
+library(reticulate)
+
+if(require(tidyverse)==FALSE) install.packages('tidyverse')
+library(tidyverse)
+```
+
+
+---
+
+# Assignment Questions
+
+In this assignment, you will *knit* this Markdown and generate a report that will explore the [LANL Dataset](https://www.dropbox.com/s/88ajdyp7hfnvrl2/lanl-auth-dataset-1-03.csv), whose documentation is available at [User-Computer Authentication Associations in Time - Cyber Security Research](https://csr.lanl.gov/data/auth/).
+
+**For the data in lines 1.1M-1.2M, please answer the following questions:**  
+
+- What is the timestamp of observation (i.e. row number) 1,200,000?    
+
+- What are the number of unique users for the aforementioned 100,000 observations?   
+
+- What is the number of unique computers used by U12 for the aforementioned 100,000 observations?  
+
+---
+
+# R Output
+
+Insert some text here describing how you read the dataset and the steps taken to answer the three questions
+
+```{r lanl_tidyverse}
+# extracting the parameters and making them  R objects
+lines_to_skip = params$lines_to_skip
+rows_to_read = params$rows_to_read
+
+lanl_tbl = read.csv('../data/lanl-auth-dataset-1-03.csv',
+                    header = F,
+                    skip = lines_to_skip,
+                    nrows = rows_to_read)
+
+# What is the timestamp
+paste('The timestamp for the last observation is', lanl_tbl$V1[nrow(lanl_tbl)])
+
+# Unique users
+paste('The number of unique users is', length( unique(lanl_tbl$V2) ) )
+
+# Number of Computers Used by U12
+paste('The number of computers Used by U12 is', lanl_tbl %>% filter(V2 == 'U12') %>% count(V3) %>% nrow())
+```
+
+---
+
+# Python Output
+
+Talk about the Python code here
+
+```{python lanl_pandas}
+import pandas as pd
+
+# converting the R object into a python object
+lines_to_skip = r.lines_to_skip
+rows_to_read = r.rows_to_read
+
+lanl_df = pd.read_csv('../data/lanl-auth-dataset-1-03.csv', header = None, skiprows = lines_to_skip, nrows = rows_to_read)
+
+# What is the timestamp
+lanl_df.tail(1)
+
+# Unique users
+lanl_df[1].nunique()
+
+# Number of Computers Used by U12
+lanl_df[lanl_df[1] == 'U12'].nunique()
+
+landl_cols_1_and_2 = lanl_df.iloc[:, 1:3] # Remember that Python does not slice inclusive of the ending index.
+u12_dict = landl_cols_1_and_2[landl_cols_1_and_2[1] == 'U12'].value_counts().to_dict()
+len(u12_dict)
+```

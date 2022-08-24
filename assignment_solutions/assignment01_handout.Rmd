@@ -1,0 +1,88 @@
+---
+title: "My First RMarkdown Report"
+author: "Fadel M. Megahed"
+date: "`r format(Sys.Date(), format = '%B %d, %Y')`"
+output: 
+  html_document:
+    code_folding: show
+    code_download: TRUE
+    number_sections: TRUE
+    paged_df: TRUE
+    toc: TRUE
+    toc_float: TRUE
+    theme: readable
+params:
+  # the parameters for the report is optional and will be often ignored in most
+  # RMarkdown examples you see online; however, it is handy if you will repeat
+  # your analysis for different settings
+  lines_to_skip: 1099999
+  rows_to_read: 100000
+---
+
+
+
+```{r setup, include=FALSE}
+# setup chunk will not be included since include = FALSE
+knitr::opts_chunk$set(echo = TRUE) # default show code and output
+```
+
+
+---
+
+
+# Required Libraries
+
+Insert all the R packages that you have used here.
+```{r packages}
+# libraries
+if(require(reticulate)==FALSE) install.packages('reticulate')
+library(reticulate)
+
+if(require(tidyverse)==FALSE) install.packages('tidyverse')
+library(tidyverse)
+```
+
+
+---
+
+# Assignment Questions
+
+In this assignment, you will *knit* this Markdown and generate a report that will explore the [LANL Dataset](https://www.dropbox.com/s/88ajdyp7hfnvrl2/lanl-auth-dataset-1-03.csv), whose documentation is available at [User-Computer Authentication Associations in Time - Cyber Security Research](https://csr.lanl.gov/data/auth/).
+
+**For the data in lines 1.1M-1.2M, please answer the following questions:**  
+
+- What is the timestamp of observation (i.e. row number) 1,200,000?    
+
+- What are the number of unique users for the aforementioned 100,000 observations?   
+
+- What is the number of unique computers used by U12 for the aforementioned 100,000 observations?  
+
+---
+
+# R Output
+
+Insert some text here describing how you read the data set and the steps taken to answer the three questions
+
+```{r lanl_tidyverse}
+# extracting the parameters and making them  R objects
+lines_to_skip = params$lines_to_skip
+rows_to_read = params$rows_to_read
+
+
+```
+
+---
+
+# Python Output
+
+Talk about the Python code here
+
+```{python lanl_pandas}
+import pandas as pd
+
+# converting the R object into a python object
+lines_to_skip = r.lines_to_skip
+rows_to_read = r.rows_to_read
+
+
+```
