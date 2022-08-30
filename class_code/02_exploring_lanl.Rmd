@@ -1,0 +1,41 @@
+---
+title: "Exploring the LANL Dataset"
+author: "Fadel M. Megahed"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    code_download: TRUE
+    number_sections: TRUE
+    toc: TRUE
+    toc_float: TRUE
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Reading the Data in R
+
+```{r r_solution, results='asis'}
+if(require(pacman)==F) install.packages('pacman')
+pacman::p_load(tidyverse)
+
+# reading the data
+# we checked for ?read.csv in console to understand the arguments
+lanl_df = read.csv(file = '../data/lanl-auth-dataset-1-03.csv',
+                   header = FALSE,
+                   skip = 1099999, nrows = 100000)
+
+# data desc for cols
+# https://csr.lanl.gov/data/auth/
+
+# cat removes [1] and the quotes
+# paste always me to combine my solution and text
+# for cat to actually print nicely, we gave the code chunk
+# results = 'asis'
+cat( paste('The timestamp for observation 1.2M is' ,
+      scales::comma(lanl_df[100000, 1]) ) )
+
+# number of unique users
+lanl_df$V2 %>% unique() %>% length()
+```
