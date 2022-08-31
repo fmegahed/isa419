@@ -1,0 +1,326 @@
+---
+title: "ISA 480: Data Driven Security"
+subtitle: "04 - An Overiew of ETL Operations"
+author: Fadel M. Megahed
+institute: |
+  | Endres Associate Professor
+  | Department of Information Systems and Analytics
+  | Farmer School of Business
+  | Miami University
+  | Email: fmegahed@miamioh.edu
+  | Office Hours: [Automated Scheduler for Office Hours](https://calendly.com/fmegahed)
+  | 
+date: "Fall 2022"
+output:
+  beamer_presentation:
+    number_sections: false
+    toc: false
+    slide_level: 3
+    includes: 
+      in_header: ../../style_files/structure.txt
+latex_engine: xelatex
+urlcolor: links
+linkcolor: links
+classoption: "aspectratio=169"
+always_allow_html: yes
+bibliography: refs.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      cache = TRUE,
+                      fig.align = "center",
+                      fig.pos = 'p',
+                      fig.width = 5,
+                      fig.height= 2.5,
+                      allowframebreaks = TRUE,
+                      fig.margin=TRUE)
+options(kableExtra.latex.load_packages = FALSE)
+pacman::p_load(kableExtra)
+```
+
+# Preface
+
+### Quick Recap of Classes 01-03
+\begin{block}{\textbf{Learning Objectives Discussed}}
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Understand the structure and expectations of this course} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Define information security and its main goals} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Understand that breaches are frequent and target different industries} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Understand the basic operations in either R or Python}
+\end{block}
+
+
+### Plan for Today's Class
+\begin{block}{\textbf{Learning Objectives}} 
+  \begin{itemize}
+  \item \textbf{Describe the data analytics process}
+  \item  \textbf{Understand the importance of ETL and data preprocessing}
+  \begin{itemize}
+      \item \textbf{Explain what do we mean by \textcolor{miamired}{technically correct data}}
+      \item \textbf{Explain what do we mean by \textcolor{miamired}{consistent data}}
+  \end{itemize}
+  \item  \textbf{Perform basic ETL in R and/or Python}
+  \end{itemize}
+\end{block}
+
+
+# The Data Analytic Process
+
+
+### Big Picture: Levels of Data Analytics
+
+\centering{\href{http://www.ithappens.nu/levels-of-data-analytics/}{\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/levelsDA.png}}}
+
+
+### Implementation Frameworks for ML/Data Analytics
+
+\begin{table}[h]
+  \centering
+  \begin{tabular}{|l|l|l|}
+  \hline
+      \rowcolor{miamired}
+       \textbf{\textcolor{white}{The KDD Process}} & \textbf{\textcolor{white}{SEMMA}} & \textbf{\textcolor{white}{CRISP-DM}} \\ \hline \hline 
+       \rowcolor{gray!30}
+       Pre KDD & ------------- & Business understanding \\ \hline \hline 
+       Selection & Sample & \multirow{2}{*}{Data understanding} \\ \cline{1-2}
+       Pre processing & Explore & \\ \hline \hline 
+       \rowcolor{gray!30}
+       Transformation & Modify & Data preparation \\ \hline \hline 
+       Data mining & Model & Modeling \\ \hline \hline 
+       \rowcolor{gray!30}
+       Interpretation/Evaluation & Assessment & Evaluation \\ \hline \hline  
+       Post KDD &  ------------- & Deployment \\ \hline \hline 
+  \end{tabular}
+\end{table}
+
+\centering{Table: A comparison of the three most commonly used Data Analytic/ Machine Learning Frameworks. Table adapted from} @azevedo2008kdd.
+
+
+### Comment on the three Implementation Frameworks
+\begin{block}{\textbf{Practical Issue with Existing Guidance}}
+    \textbf{These three frameworks encourage iterating, but do not provide sufficient guidance on how.}
+\end{block}
+
+\centering 
+
+\href{https://scikit-learn.org/stable/tutorial/machine_learning_map/index.html}{\includegraphics[width=\textwidth, height=0.54\textheight, keepaspectratio, frame]{../../figures/ml_map.png}}
+    
+\footnotesize \textbf{Source:} SciKit-Learn @scikit2020choosing.
+
+
+#  Important ETL Concepts
+
+### Data Analysis: A Crowd Sourced Definition from Wikipedia
+
+Wikipedia @wikipedia2020data defines \textcolor{miamired}{\textbf{data analysis}} to be the process of: 
+
+\vspace{0.25\baselineskip}
+
+\begin{quotation}
+\noindent inspecting, cleansing, transforming and modeling data with the goal of discovering useful information, informing conclusion and supporting decision-making. Data analysis has multiple facets and approaches, encompassing diverse techniques under a variety of names, and is used in different business, science, and social science domains.
+\end{quotation}
+
+
+### Data Analysis Value Chain
+
+\centering
+
+\href{https://cran.r-project.org/doc/contrib/de_Jonge+van_der_Loo-Introduction_to_data_cleaning_with_R.pdf}{\includegraphics[width=\textwidth, height=0.77\textheight, keepaspectratio, frame]{../../figures/statValueChain.PNG}}
+
+\vspace{-0.5\baselineskip}
+
+\footnotesize \textbf{Source:} The figure is from @de2013introduction. Please click on the image and read p. 7-8 from the reference.
+
+### Useful Operations/Functions (in R/Python)
+
+\begin{table}[h]
+\centering
+  \begin{tabular}{|p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}|}
+  \hline
+      \rowcolor{miamired}
+       \textbf{\textcolor{white}{Goal}} & \textbf{\textcolor{white}{R}} & \textbf{\textcolor{white}{pandas}} \\ \hline \hline 
+       \rowcolor{gray!30}
+       structure/classes of variables & \texttt{str()} \newline \texttt{dplyr::glimpse()} & \texttt{df.info()} \\
+       summaries for each col/variable & \texttt{summary()} & \texttt{df.describe()} \\
+       \rowcolor{gray!30}
+       dimensions of object & \texttt{dim()} & \texttt{df.shape} \\
+       convert column types & \texttt{df\$x1 = as.numeric(df\$x1)} \newline \texttt{df \%>\%} \newline \textcolor{white}{hh} \texttt{mutate(x1 = as.numeric(x1))} & \texttt{df["x1"] = df["x1"].astype(float)}  \newline \texttt{df = df.astype(\{"x2": int, "x3": complex\})} \\ 
+       \rowcolor{gray!30} 
+       subset data frame by row numbers & \texttt{slice(df, 1:10)} & \texttt{df.iloc[:9]} \\ \hline \hline
+    \end{tabular}
+\end{table}
+
+See the \href{https://pandas.pydata.org/pandas-docs/stable/getting_started/comparison/comparison_with_r.html}{Panda's Official Comparison with R Libraries} for more details.
+
+
+### A Primer on Technically Correct and Consistent Data
+
+Let us discuss the concepts of **technically correct** and **consistent** data based on the `KDDTrain+.csv` dataset. Note that the data was created by @tavallaee2009detailed (click [here](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5356528) to access their paper).
+
+**Comments:**   
+
+- I have intentionally picked a large dataset so we can think about how we can design a process to check for technically correct and consistent data.  
+- How many rows, variables and unique values for the `label` column do we have?   
+- Can you report summary statistics for the data?   
+- How can we visualize such data quickly in both R (`DataExplorer::create_report()`) and Python (`pandas-profiling`)?  
+
+
+```{r kddNSL, include = FALSE}
+pacman::p_load(tidyverse, magrittr)
+df = read_csv("../../data/KDDTrain+.csv")
+```
+
+
+
+# ETL Operations on IP Addresses
+
+### Developing an intuition {.allowframebreaks}
+
+```{r cmd}
+system("ping google.com", intern = T)
+```
+
+
+\begin{block}{\textbf{Dissecting the IP Address}}
+  \begin{itemize}
+    \item IP addresses is one of the most fundamental security domain elements
+    \item IPV4 is comprised of \textcolor{miamired}{four bytes}, and is commonly stored in a \textcolor{miamired}{dotted-decimal notation}
+      \begin{itemize}
+        \item A byte (i.e. 8-bits) can range in values from 0 to 255
+        \item The total number of IPv4 addresses is equal to: $\mathbf{(2^8)^4 = 2^{32} = 4,294,967,296}$
+        \item Thus, any ip address can be converted to/from a 32-bit integer value
+      \end{itemize}
+    \item The conversion from a 32-bit value can be used to save space since each string character is stored in one byte
+    \begin{itemize}
+      \item Thus, the storage cost is reduced from $\mathbf{15\times 8 = 120}$ to $\mathbf{4 \times 8 =32}$ bits per IP address (assuming most efficient storage for both object types)
+    \end{itemize}
+  \end{itemize}
+\end{block}
+
+
+\centering{\href{https://www.wikihow.com/Convert-from-Binary-to-Decimal}{\includegraphics[width=\linewidth, height=0.8\textheight,frame, keepaspectratio]{../../figures/binaryToDecimal.png}}}
+
+### Converting the dotted-decimal notation IP to a 32-Bit Integer {.allowframebreaks} 
+To understand how the binary notation can be extended to IP addresses, let us convert the following IP addresses to their 32bit Integer number.
+
+\begin{itemize}
+  \item Q1: "0.0.0.1" %Answer: 1
+
+  \item Q2: "0.0.0.3" %Answer: 3
+
+  \item Q3: "0.0.1.0" %Answer: 256
+
+  \item Q4: "0.0.1.240" %Answer: 496
+
+  \item Q5: "0.0.100.240" %Answer: 25840
+
+\end{itemize}
+
+You can check your answer using the [iptools package](https://cran.r-project.org/web/packages/iptools/iptools.pdf) function titled: `ip_to_numeric`.
+
+```{r iptonumeric}
+print("Conversion of IP addresses using R")
+pacman::p_load(iptools)
+
+ip_to_numeric("0.0.100.240")
+
+ip_to_numeric("0.0.100.240") %>% numeric_to_ip()
+
+```
+
+
+```{python ipConversion}
+print('Python Conversion of IP addresses')
+
+import ipaddress
+
+int(ipaddress.ip_address('0.0.100.240'))
+
+str(ipaddress.ip_address(25840))
+
+```
+
+
+### Classless Inter-Domain Routing (CIDR) Blocks/ Ranges {.allowframebreaks}
+
+\centering{\href{https://en.wikipedia.org/wiki/IPv4_address_exhaustion}{\includegraphics[width=\linewidth, height=0.8\textheight,frame, keepaspectratio]{../../figures/IPv4.png}}}
+
+
+\centering{\href{https://myip.ms/info/whois/104.20.31.157/k/649487422/website/filgoal.com}{\includegraphics[width=\linewidth, height=0.8\textheight,frame, keepaspectratio]{../../figures/cidr-filgoal.PNG}}}
+
+Number of IP addresses in picture:  $= 2^{32-12} = 2^{20} = (31-16+1) * 2^8 * 2^8 = 1,048,576$
+
+```{r cidrs, eval=FALSE}
+iptools::ips_in_cidrs("104.16.244.12","104.16.0.0/12") # R
+```
+
+```{python cidrs2}
+import ipaddress as ip
+ip.ip_address('104.16.244.12') in ip.ip_network('104.16.0.0/12') # Python
+```
+
+
+### Live Demo: Dissecting IP addresses
+
+We will explore working with IP addresses. Specifically, we will work with IP addresses since they are commonly used in Info Security to highlight suspicious domains. Please check @att2020reputation and @sans2020suspicious for more details. 
+
+By the end of the demo, you should be able to do the following:
+\begin{itemize}
+  \item Explain the basics of the IPV4 structure
+  \item Convert IP addresses to their corresponding 32-bit integer representation
+  \item Be able to use online APIs to extract relevant information for a given API/ list of APIs
+\end{itemize}
+
+\textcolor{miamired}{\textbf{Prior to our live demo, let us examine some online Miami University IP address information to introduce you to the IP Stack API.}} You will be required to create an account and utilize the \textcolor{miamired}{\underline{\textbf{free}}} API.
+
+```{r ips1, include=FALSE, eval=FALSE}
+source("ipstackKey.R") # where I saved my key
+pacman::p_load(rvest, tidyverse, magrittr, jsonlite) # loading needed packages
+miamiURLs = 
+  read_html("https://tools.tracemyip.org/search--isp/miami+university") %>% 
+  html_node("#tlzRDTIPv4") %>% html_table() %>% select(c(2)) %>% unlist()
+
+url_base = "http://api.ipstack.com/"
+
+dfLocations = as.data.frame(matrix(nrow=50, ncol = 8))
+apiFields = "latitude,longitude,zip,city,region_name,type,ip"
+colnames(dfLocations) = strsplit(apiFields, ",") %>% unlist()
+
+for (i in 1:6) {
+  dataFromAPI = fromJSON(
+    paste0(url_base, miamiURLs[i], "?access_key=", accessKey,
+           "&fields=",apiFields))
+  temp = unlist(dataFromAPI)
+  dfLocations[i,] = temp
+}
+
+dfLocations
+```
+
+
+# Recap
+
+### What I have tried to accomplish in today's class
+\begin{block}{\textbf{Learning Objectives}} 
+  \begin{itemize}
+  \item \textbf{Describe the data analytics process}
+  \item  \textbf{Understand the importance of ETL and data preprocessing}
+  \begin{itemize}
+      \item \textbf{Explain what do we mean by \textcolor{miamired}{technically correct data}}
+      \item \textbf{Explain what do we mean by \textcolor{miamired}{consistent data}}
+  \end{itemize}
+  \item  \textbf{Perform basic ETL in R and/or Python}
+  \end{itemize}
+\end{block}
+
+
+
+### References {.allowframebreaks}
+::: {#refs}
+:::
+
+---
+
+\maketitle
