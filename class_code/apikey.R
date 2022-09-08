@@ -1,1 +1,0 @@
-api_key_ipstack = '01aefa852bc0c761c6be100079c45a0e' 

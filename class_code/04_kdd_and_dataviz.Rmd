@@ -1,3 +1,4 @@
+@@ -0,0 +1,83 @@
 ---
 title: "Technically Correct, Consistent and ETL"
 author: "Fadel M. Megahed"
@@ -80,4 +81,3 @@ kdd_pd.info()
 profile = ProfileReport(kdd_pd, title="Pandas Profiling Report for the KDD Dataset")
 profile.to_file("kdd_report_py.html")
 ```
-

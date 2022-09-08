@@ -4,6 +4,7 @@ old/
 *_cache/
 *_files/
 references/
+*apikey.R
 pptx/
 
 # Ignored file types
@@ -20,3 +21,5 @@ pptx/
 # Ignoring large files
 lanl-auth-dataset-1-03.csv
 lectures/04_analytics_process_and_etl/ipstackKey.R
+class_code/apikey.R
+class_code/apikey.R

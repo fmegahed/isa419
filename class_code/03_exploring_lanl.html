@@ -11,7 +11,7 @@
 
 <meta name="author" content="Fadel M. Megahed" />
 
-<meta name="date" content="2022-09-02" />
+<meta name="date" content="2022-08-29" />
 
 <title>Exploring the LANL Dataset</title>
 
@@ -2475,8 +2475,7 @@ HTMLWidgets.widget({
     // in order that the type=number inputs return a number
     $.valHooks.number = {
       get: function(el) {
-        var value = parseFloat(el.value);
-        return isNaN(value) ? "" : value;
+        return el.value * 1;
       }
     };
     $(el).html('&nbsp;');
@@ -4252,7 +4251,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Exploring the LANL Dataset</h1>
 <h4 class="author">Fadel M. Megahed</h4>
-<h4 class="date">2022-09-02</h4>
+<h4 class="date">2022-08-29</h4>
 
 </div>
 
@@ -4290,9 +4289,9 @@ lanl_df$V2 %&gt;% unique() %&gt;% length()</code></pre>
 lanl_df %&gt;% # also represented as |&gt;
   filter(V2 == &#39;U12&#39;) %&gt;% 
   count(V3) %&gt;%  # they logged into a 123 computers (total rows)
-  datatable() # for beautiful printing</code></pre>
-<div id="htmlwidget-6e37c8d2bb91fb63a3ef" style="width:100%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6e37c8d2bb91fb63a3ef">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123"],["C104","C1052","C1053","C106","C107","C108","C10823","C110","C11372","C11391","C13","C13115","C13515","C15279","C159","C161","C162","C1692","C171","C173","C174","C1764","C186","C209","C210","C211","C213","C221","C2229","C2244","C2265","C2313","C2325","C2359","C2386","C2388","C2467","C251","C252","C264","C265","C270","C281","C2853","C292","C293","C312","C313","C324","C342","C343","C350","C353","C364","C365","C381","C401","C415","C427","C428","C4288","C431","C443","C4437","C4450","C449","C451","C456","C457","C4571","C465","C4732","C4733","C4734","C4737","C4740","C4746","C4757","C4781","C486","C5047","C5114","C5115","C524","C53","C561","C582","C598","C599","C602","C618","C630","C631","C632","C635","C638","C645","C685","C734","C748","C775","C7913","C801","C809","C814","C819","C8372","C842","C8513","C8629","C8630","C8631","C8632","C8633","C8652","C886","C9160","C94","C943","C944","C95","C957","C9743"],[337,240,233,54,78,107,61,52,32,151,2792,168,105,1,79,102,80,43,1,93,73,53,91,90,78,81,99,72,2,2,2,3,1,109,2,3,2,51,86,123,166,74,265,1,198,97,93,108,54,78,81,74,85,83,78,74,102,78,70,103,181,68,58,22,122,66,390,84,83,27,81,20,14,83,73,22,21,44,3,76,19,12,20,44,162,69,74,78,101,76,265,65,53,87,212,92,81,203,41,79,81,108,294,73,121,108,107,47,33,76,53,92,46,76,2,72,104,164,72,80,131,44,47]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>V3<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
+  datatable()</code></pre>
+<div id="htmlwidget-f394f0a15a1f57c4b385" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-f394f0a15a1f57c4b385">{"x":{"filter":"none","vertical":false,"data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75","76","77","78","79","80","81","82","83","84","85","86","87","88","89","90","91","92","93","94","95","96","97","98","99","100","101","102","103","104","105","106","107","108","109","110","111","112","113","114","115","116","117","118","119","120","121","122","123"],["C104","C1052","C1053","C106","C107","C108","C10823","C110","C11372","C11391","C13","C13115","C13515","C15279","C159","C161","C162","C1692","C171","C173","C174","C1764","C186","C209","C210","C211","C213","C221","C2229","C2244","C2265","C2313","C2325","C2359","C2386","C2388","C2467","C251","C252","C264","C265","C270","C281","C2853","C292","C293","C312","C313","C324","C342","C343","C350","C353","C364","C365","C381","C401","C415","C427","C428","C4288","C431","C443","C4437","C4450","C449","C451","C456","C457","C4571","C465","C4732","C4733","C4734","C4737","C4740","C4746","C4757","C4781","C486","C5047","C5114","C5115","C524","C53","C561","C582","C598","C599","C602","C618","C630","C631","C632","C635","C638","C645","C685","C734","C748","C775","C7913","C801","C809","C814","C819","C8372","C842","C8513","C8629","C8630","C8631","C8632","C8633","C8652","C886","C9160","C94","C943","C944","C95","C957","C9743"],[337,240,233,54,78,107,61,52,32,151,2792,168,105,1,79,102,80,43,1,93,73,53,91,90,78,81,99,72,2,2,2,3,1,109,2,3,2,51,86,123,166,74,265,1,198,97,93,108,54,78,81,74,85,83,78,74,102,78,70,103,181,68,58,22,122,66,390,84,83,27,81,20,14,83,73,22,21,44,3,76,19,12,20,44,162,69,74,78,101,76,265,65,53,87,212,92,81,203,41,79,81,108,294,73,121,108,107,47,33,76,53,92,46,76,2,72,104,164,72,80,131,44,47]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>V3<\/th>\n      <th>n<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"columnDefs":[{"className":"dt-right","targets":2},{"orderable":false,"targets":0}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>lanl_df %&gt;% # also represented as |&gt;
   filter(V2 == &#39;U12&#39;) -&gt; user12
 
@@ -4301,43 +4300,9 @@ user12$V3 %&gt;% unique() %&gt;% length()</code></pre>
 </div>
 <div id="python" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Python</h1>
-<pre class="r"><code>library(reticulate)
-py_install(&quot;pandas&quot;)</code></pre>
-<pre><code>## + &quot;C:/tools/Anaconda3/condabin/conda.bat&quot; &quot;install&quot; &quot;--yes&quot; &quot;--prefix&quot; &quot;C:/tools/Anaconda3&quot; &quot;-c&quot; &quot;conda-forge&quot; &quot;pandas&quot;</code></pre>
-<pre class="python"><code>import pandas as pd
-
-df_from_r = r.lanl_df
-
-lanl_pd = pd.read_csv(&#39;../data/lanl-auth-dataset-1-03.csv&#39;, header = None, skiprows = 1099999,  nrows = 100000)
-
-lanl_pd.tail(n=0)
-
-# number of unique users</code></pre>
-<pre><code>## Empty DataFrame
-## Columns: [0, 1, 2]
-## Index: []</code></pre>
-<pre class="python"><code>lanl_pd.nunique() # we want the answer for col1</code></pre>
-<pre><code>## 0    9787
-## 1    1466
-## 2    1801
-## dtype: int64</code></pre>
-<pre class="python"><code>lanl_pd[1].nunique()
-
-
-# number of computers used by U12</code></pre>
-<pre><code>## 1466</code></pre>
-<pre class="python"><code>lanl_pd[lanl_pd[1]==&#39;U12&#39;][2].nunique()</code></pre>
-<pre><code>## 123</code></pre>
-<pre class="r"><code>library(reticulate)
-py_df = py$lanl_pd
-colnames(py_df) = c(&#39;V1&#39;, &#39;V2&#39;, &#39;V3&#39;)
-
-setdiff(lanl_df, py_df)</code></pre>
-<pre><code>## [1] V1 V2 V3
-## &lt;0 rows&gt; (or 0-length row.names)</code></pre>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIkV4cGxvcmluZyB0aGUgTEFOTCBEYXRhc2V0Ig0KYXV0aG9yOiAiRmFkZWwgTS4gTWVnYWhlZCINCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCINCm91dHB1dDogDQogIGh0bWxfZG9jdW1lbnQ6DQogICAgY29kZV9kb3dubG9hZDogVFJVRQ0KICAgIG51bWJlcl9zZWN0aW9uczogVFJVRQ0KICAgIHRvYzogVFJVRQ0KICAgIHRvY19mbG9hdDogVFJVRQ0KICAgIHBhZ2VkX2RmOiBUUlVFDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQpgYGANCg0KIyBSZWFkaW5nIHRoZSBEYXRhIGluIFINCg0KYGBge3Igcl9zb2x1dGlvbiwgcmVzdWx0cz0nYXNpcyd9DQppZihyZXF1aXJlKHBhY21hbik9PUYpIGluc3RhbGwucGFja2FnZXMoJ3BhY21hbicpDQpwYWNtYW46OnBfbG9hZCh0aWR5dmVyc2UsIERUKQ0KDQojIHJlYWRpbmcgdGhlIGRhdGENCiMgd2UgY2hlY2tlZCBmb3IgP3JlYWQuY3N2IGluIGNvbnNvbGUgdG8gdW5kZXJzdGFuZCB0aGUgYXJndW1lbnRzDQpsYW5sX2RmID0gcmVhZC5jc3YoZmlsZSA9ICcuLi9kYXRhL2xhbmwtYXV0aC1kYXRhc2V0LTEtMDMuY3N2JywNCiAgICAgICAgICAgICAgICAgICBoZWFkZXIgPSBGQUxTRSwNCiAgICAgICAgICAgICAgICAgICBza2lwID0gMTA5OTk5OSwgbnJvd3MgPSAxMDAwMDApDQoNCiMgZGF0YSBkZXNjIGZvciBjb2xzDQojIGh0dHBzOi8vY3NyLmxhbmwuZ292L2RhdGEvYXV0aC8NCg0KIyBjYXQgcmVtb3ZlcyBbMV0gYW5kIHRoZSBxdW90ZXMNCiMgcGFzdGUgYWx3YXlzIG1lIHRvIGNvbWJpbmUgbXkgc29sdXRpb24gYW5kIHRleHQNCiMgZm9yIGNhdCB0byBhY3R1YWxseSBwcmludCBuaWNlbHksIHdlIGdhdmUgdGhlIGNvZGUgY2h1bmsNCiMgcmVzdWx0cyA9ICdhc2lzJw0KY2F0KCBwYXN0ZSgnVGhlIHRpbWVzdGFtcCBmb3Igb2JzZXJ2YXRpb24gMS4yTSBpcycgLA0KICAgICAgc2NhbGVzOjpjb21tYShsYW5sX2RmWzEwMDAwMCwgMV0pICkgKQ0KDQojIG51bWJlciBvZiB1bmlxdWUgdXNlcnMNCmxhbmxfZGYkVjIgJT4lIHVuaXF1ZSgpICU+JSBsZW5ndGgoKQ0KbmFtZXNfdW5pcXVlX3VzZXJzID0gbGFubF9kZiRWMiAlPiUgdW5pcXVlKCkNCg0KIyBudW1iZXIgb2YgdW5pcXVlIGNvbXB1dGVycyB1c2VkIGJ5IHVzZXIgMTIgJ1UxMicNCiMgd2Ugd2lsbCB1c2UgdGhlIGZpbHRlciBmdW5jdGlvbiBmcm9tIGRwbHlyIHBrZyAodGlkeXZlcnNlKQ0KbGFubF9kZiAlPiUgIyBhbHNvIHJlcHJlc2VudGVkIGFzIHw+DQogIGZpbHRlcihWMiA9PSAnVTEyJykgJT4lIA0KICBjb3VudChWMykgJT4lICAjIHRoZXkgbG9nZ2VkIGludG8gYSAxMjMgY29tcHV0ZXJzICh0b3RhbCByb3dzKQ0KICBkYXRhdGFibGUoKSAjIGZvciBiZWF1dGlmdWwgcHJpbnRpbmcNCg0KbGFubF9kZiAlPiUgIyBhbHNvIHJlcHJlc2VudGVkIGFzIHw+DQogIGZpbHRlcihWMiA9PSAnVTEyJykgLT4gdXNlcjEyDQoNCnVzZXIxMiRWMyAlPiUgdW5pcXVlKCkgJT4lIGxlbmd0aCgpDQpgYGANCg0KDQojIFB5dGhvbg0KDQpgYGB7ciBweXRob25fc2V0dXB9DQpsaWJyYXJ5KHJldGljdWxhdGUpDQpweV9pbnN0YWxsKCJwYW5kYXMiKQ0KYGBgDQoNCg0KYGBge3B5dGhvbiBleHRyYWN0X2luX3B5dGhvbn0NCmltcG9ydCBwYW5kYXMgYXMgcGQNCg0KZGZfZnJvbV9yID0gci5sYW5sX2RmDQoNCmxhbmxfcGQgPSBwZC5yZWFkX2NzdignLi4vZGF0YS9sYW5sLWF1dGgtZGF0YXNldC0xLTAzLmNzdicsIGhlYWRlciA9IE5vbmUsIHNraXByb3dzID0gMTA5OTk5OSwgIG5yb3dzID0gMTAwMDAwKQ0KDQpsYW5sX3BkLnRhaWwobj0wKQ0KDQojIG51bWJlciBvZiB1bmlxdWUgdXNlcnMNCmxhbmxfcGQubnVuaXF1ZSgpICMgd2Ugd2FudCB0aGUgYW5zd2VyIGZvciBjb2wxDQpsYW5sX3BkWzFdLm51bmlxdWUoKQ0KDQoNCiMgbnVtYmVyIG9mIGNvbXB1dGVycyB1c2VkIGJ5IFUxMg0KbGFubF9wZFtsYW5sX3BkWzFdPT0nVTEyJ11bMl0ubnVuaXF1ZSgpDQpgYGANCg0KYGBge3IgcHl0aG9uX3RvX3J9DQpsaWJyYXJ5KHJldGljdWxhdGUpDQpweV9kZiA9IHB5JGxhbmxfcGQNCmNvbG5hbWVzKHB5X2RmKSA9IGMoJ1YxJywgJ1YyJywgJ1YzJykNCg0Kc2V0ZGlmZihsYW5sX2RmLCBweV9kZikNCmBgYA0KDQoNCg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkV4cGxvcmluZyB0aGUgTEFOTCBEYXRhc2V0Ig0KYXV0aG9yOiAiRmFkZWwgTS4gTWVnYWhlZCINCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCINCm91dHB1dDogDQogIGh0bWxfZG9jdW1lbnQ6DQogICAgY29kZV9kb3dubG9hZDogVFJVRQ0KICAgIG51bWJlcl9zZWN0aW9uczogVFJVRQ0KICAgIHRvYzogVFJVRQ0KICAgIHRvY19mbG9hdDogVFJVRQ0KICAgIHBhZ2VkX2RmOiBUUlVFDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGU9RkFMU0V9DQprbml0cjo6b3B0c19jaHVuayRzZXQoZWNobyA9IFRSVUUpDQpgYGANCg0KIyBSZWFkaW5nIHRoZSBEYXRhIGluIFINCg0KYGBge3Igcl9zb2x1dGlvbiwgcmVzdWx0cz0nYXNpcyd9DQppZihyZXF1aXJlKHBhY21hbik9PUYpIGluc3RhbGwucGFja2FnZXMoJ3BhY21hbicpDQpwYWNtYW46OnBfbG9hZCh0aWR5dmVyc2UsIERUKQ0KDQojIHJlYWRpbmcgdGhlIGRhdGENCiMgd2UgY2hlY2tlZCBmb3IgP3JlYWQuY3N2IGluIGNvbnNvbGUgdG8gdW5kZXJzdGFuZCB0aGUgYXJndW1lbnRzDQpsYW5sX2RmID0gcmVhZC5jc3YoZmlsZSA9ICcuLi9kYXRhL2xhbmwtYXV0aC1kYXRhc2V0LTEtMDMuY3N2JywNCiAgICAgICAgICAgICAgICAgICBoZWFkZXIgPSBGQUxTRSwNCiAgICAgICAgICAgICAgICAgICBza2lwID0gMTA5OTk5OSwgbnJvd3MgPSAxMDAwMDApDQoNCiMgZGF0YSBkZXNjIGZvciBjb2xzDQojIGh0dHBzOi8vY3NyLmxhbmwuZ292L2RhdGEvYXV0aC8NCg0KIyBjYXQgcmVtb3ZlcyBbMV0gYW5kIHRoZSBxdW90ZXMNCiMgcGFzdGUgYWx3YXlzIG1lIHRvIGNvbWJpbmUgbXkgc29sdXRpb24gYW5kIHRleHQNCiMgZm9yIGNhdCB0byBhY3R1YWxseSBwcmludCBuaWNlbHksIHdlIGdhdmUgdGhlIGNvZGUgY2h1bmsNCiMgcmVzdWx0cyA9ICdhc2lzJw0KY2F0KCBwYXN0ZSgnVGhlIHRpbWVzdGFtcCBmb3Igb2JzZXJ2YXRpb24gMS4yTSBpcycgLA0KICAgICAgc2NhbGVzOjpjb21tYShsYW5sX2RmWzEwMDAwMCwgMV0pICkgKQ0KDQojIG51bWJlciBvZiB1bmlxdWUgdXNlcnMNCmxhbmxfZGYkVjIgJT4lIHVuaXF1ZSgpICU+JSBsZW5ndGgoKQ0KbmFtZXNfdW5pcXVlX3VzZXJzID0gbGFubF9kZiRWMiAlPiUgdW5pcXVlKCkNCg0KIyBudW1iZXIgb2YgdW5pcXVlIGNvbXB1dGVycyB1c2VkIGJ5IHVzZXIgMTIgJ1UxMicNCiMgd2Ugd2lsbCB1c2UgdGhlIGZpbHRlciBmdW5jdGlvbiBmcm9tIGRwbHlyIHBrZyAodGlkeXZlcnNlKQ0KbGFubF9kZiAlPiUgIyBhbHNvIHJlcHJlc2VudGVkIGFzIHw+DQogIGZpbHRlcihWMiA9PSAnVTEyJykgJT4lIA0KICBjb3VudChWMykgJT4lICAjIHRoZXkgbG9nZ2VkIGludG8gYSAxMjMgY29tcHV0ZXJzICh0b3RhbCByb3dzKQ0KICBkYXRhdGFibGUoKQ0KDQpsYW5sX2RmICU+JSAjIGFsc28gcmVwcmVzZW50ZWQgYXMgfD4NCiAgZmlsdGVyKFYyID09ICdVMTInKSAtPiB1c2VyMTINCg0KdXNlcjEyJFYzICU+JSB1bmlxdWUoKSAlPiUgbGVuZ3RoKCkNCmBgYA0KDQoNCiMgUHl0aG9uDQo=</div>
 
 
 </div>
