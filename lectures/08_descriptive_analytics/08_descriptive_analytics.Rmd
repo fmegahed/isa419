@@ -1,0 +1,307 @@
+---
+title: "ISA 419: Data Driven Security"
+subtitle: "08 - Descriptive Analytics (Cont.)"
+author: Fadel M. Megahed
+institute: |
+  | Endres Associate Professor
+  | Department of Information Systems and Analytics
+  | Farmer School of Business
+  | Miami University
+  | Email: fmegahed@miamioh.edu
+  | Office Hours: [Automated Scheduler for Office Hours](https://calendly.com/fmegahed)
+  | 
+date: "Fall 2022"
+output:
+  beamer_presentation:
+    number_sections: false
+    toc: false
+    slide_level: 3
+    includes: 
+      in_header: ../../style_files/structure.txt
+latex_engine: xelatex
+urlcolor: links
+linkcolor: links
+classoption: "aspectratio=169"
+always_allow_html: yes
+bibliography: refs.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      verbose = FALSE,
+                      progress = FALSE,
+                      fig.align = "center",
+                      fig.pos = 'p',
+                      fig.width = 5,
+                      fig.height= 2.5,
+                      allowframebreaks = TRUE,
+                      fig.margin=TRUE,
+                      kable.force.latex = TRUE)
+options(kableExtra.latex.load_packages = FALSE)
+pacman::p_load(kableExtra, tidyverse, xtable)
+```
+
+# Recap 
+
+### Our Course Progress so Far
+
+\begin{block}{\textbf{Learning Objectives Discussed}}
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Define information security and its main goals} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Understand that breaches are frequent and target different industries} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Understand the basic operations in either R or Python} \\
+   $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Describe the data analytics process} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Describe/Convert  ETL data to be both technically correct and consistent} \\
+  $\quad$ \textcolor{darkgreen}{\large \checkboxFadel} \textbf{Summarize and examine data through ETL operations}
+\end{block}
+
+
+### Security Datasets that you have Examined So Far
+
+- [Have I been pawned?](https://haveibeenpwned.com/)    
+
+- [Los Alamos National Lab's User Authentication Dataset](https://csr.lanl.gov/data/auth/)  
+
+- [NSL-KDD Cup 1999 Intrusion Dataset](https://www.unb.ca/cic/datasets/nsl.html)  
+
+- [Allien Vault IP Reputation Dataset](https://reputation.alienvault.com/reputation.data)
+
+### Learning Objectives for Today's Class
+
+- Describe impact of data types on how we summarize them  
+
+- Intro to Data Encoding and Visualizations  
+
+
+
+# Data Models
+
+### On the Theory of Scales of Measurement
+
+\centering {\includegraphics[width=\textwidth, height=1.5\textheight, keepaspectratio,frame]{../../figures/stevens_science_paper.png}}
+
+
+### Data Types (from S. Stevens, Theory of Scales)
+
+\centering {\includegraphics[width=\textwidth, height=0.85\textheight, keepaspectratio,frame]{../../figures/datatypes.png}}
+
+
+### Nnominal, ordinal, or numeric for Portmap.csv?
+
+```{r portmap_types, echo=FALSE}
+pacman::p_load(tidyverse, magrittr)
+df = read.csv("../../data/Portmap.csv", nrow=1000, stringsAsFactors = T)
+df %<>% select('Total.Fwd.Packets', 'Total.Backward.Packets', 
+               'Max.Packet.Length', 'Average.Packet.Size', 'Label')
+colnames(df) = c("FWD", "Back", "PL", "PS", "Label")
+glimpse(df)
+```
+
+
+
+# Descriptive Analytics/ Exploratory Data Analysis (EDA)
+
+### Objectives
+
+\textbf{Our primary goal is to \textcolor{miamired}{develop a better understanding of the data.} The following guidelines from} **@rds2016** \textbf{can be useful:}
+\begin{itemize}
+  \item Use questions as tools to guide your investigation.
+  \begin{itemize}
+    \item  When you ask a question, it focuses your attention on a specific part of your dataset and helps you decide which graphs, models, or transformations to make.
+  \end{itemize}
+  \item EDA is fundamentally a creative process, where you should ask \textcolor{miamired}{quality} questions through asking a large quantity of questions.
+  \item There is no rule about which questions you should ask to guide your research. However, two types of questions will always be useful for making discoveries within your data.
+  \begin{itemize}
+    \item What type of variation occurs within my variables?
+    \item What type of covariation occurs between my variables?
+  \end{itemize}
+\end{itemize}
+
+### Implementation Strategies
+
+**In my estimation, the EDA process typically combines:**
+
+- **Descriptive statistics/modeling,** where statistical techniques for summarizing and describing the variation within the data are used.  
+- **Visualization techniques,** charting the data allows us to get a different perspective of the data.  
+
+### A Synthetic Example: The Anscombe Dataset {.allowframebreaks}
+
+**In a seminal paper, @anscombe1973graphs stated:** *Few of us escape being indoctrinated with these notions* 
+
+- *numerical calculations are exact, but graphs are rough;*  
+- *for any particular kind of statistical data there is just one set of calculations constituting a correct statistical analysis;*  
+- *performing intricate calculations is virtuous, whereas actually looking at the data is cheating.*
+
+**He proceeded by stating that** *a computer should make both calculations and graphs. Both sorts of output should be studied; each will contribute to understanding.*  
+
+**Now, let us consider his four datasets, each consisting of eleven (x,y) pairs.**
+
+
+
+```{r anscombe1}
+anscombe %>% xtable::xtable() -> xt
+align(xt) <- "lrrrrrrrr"
+
+cat("---")
+```
+
+```{r anscombe2, results='asis'}
+print(xt, include.rownames=F) 
+```
+ 
+```{r anscombe3, results='asis'}
+pacman::p_load(Tmisc) # same data but in 3 columns
+df = quartet 
+df %>% group_by(set) %>% 
+  summarise(x.mean = mean(x), x.sd = sd(x),
+            y.mean = mean(y), y.sd = sd(y),
+            corr = cor(x, y)) %>% kable(digits = 3)
+```
+The code in this slide and next is based on <https://rpubs.com/turnersd/anscombe>. 
+
+```{r anscombe4, results='asis', fig.height=3}
+ggplot(quartet, aes(x, y)) + geom_point() + 
+  geom_smooth(method = lm, se = FALSE) + facet_wrap(~set)
+```
+
+### Anscombe-Like Mistakes in Research and Practice
+In my estimation, Figure 8c from @cai2012neuronal represents an example where regression should not have been performed. 
+
+\centering \href{https://www.jneurosci.org/content/32/11/3791/tab-figures-data}{\includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio,frame]{../../figures/F8Large.jpg}}
+
+### Some Useful Statistical Summaries {.allowframebreaks}
+
+In lab 01 we have described several variables, you may be interested in performing some statistical summaries for a grouping variable. 
+
+```{r portmap, results='asis'}
+pacman::p_load(magrittr)
+df = read.csv("../../data/Portmap.csv", nrow=1000, stringsAsFactors = T)
+df %<>% select('Total.Fwd.Packets', 'Total.Backward.Packets', 
+               'Max.Packet.Length', 'Average.Packet.Size', 'Label')
+colnames(df) = c("FWD", "Back", "PL", "PS", "Label")
+
+df %>% group_by(Label) %>% 
+  summarise_all(list(med= median, avg = mean, sd= sd)) %>% 
+  kable() %>% 
+  kable_styling(position = "center", latex_options = "scale_down")
+
+```
+
+### Some Useful Statistical Tests
+
+For a more detailed statistical analysis of your data. I recommend the table in <https://stats.idre.ucla.edu/other/mult-pkg/whatstat/>, which provides general guidelines for choosing a statistical test. \textcolor{miamired}{To remind you to examine the link, I included the first 6 rows (limited to the first 4 columns) of that table below.}  
+
+```{r tablefromUCLA, echo=F, cache=TRUE, results='asis'}
+pacman::p_load(tidyverse, rvest)
+
+"https://stats.idre.ucla.edu/other/mult-pkg/whatstat/" %>% read_html() %>% 
+  html_node("#genesis-content > article > div > table") %>% html_table() %>% 
+  select(c(1:4)) %>%  xtable() -> ucla
+colnames(ucla) = c('no. Ys', 'type of Xs', 'type of Ys', 'Test(s)')
+
+align(ucla) = "lp{0.42in}p{1.38in}p{1.38in}p{1.38in}"
+
+print(head(ucla), include.rownames=F) 
+```
+
+### Fundamentals of Data Viz: Guidelines 
+
+\begin{block}{\textbf{The Visual Display of Quantitative Data (E. Tufte)}}
+		\begin{itemize}
+			\setbeamercovered{transparent}
+			\item \textcolor{miamired}{\textbf{Show the data}}
+			\item \textbf{Lead to thinking about the \textcolor{miamired}{substance} rather than  something else}
+			\item \textbf{\textcolor{miamired}{Avoid distorting} what the data have to say}
+			\item \textbf{\textcolor{miamired}{Present many numbers in a small space}}
+			\item \textbf{\textcolor{miamired}{Make large datasets coherent}}
+			\item \textbf{\textcolor{miamired}{Encourage the eye to compare different pieces of the data}}
+			\item \textbf{\textcolor{miamired}{Reveal the data at several levels of detail}, from a broad overview to the fine structure}
+			\item \textbf{\textcolor{miamired}{Serve a purpose:} description, exploration, tabulation, decoration}
+			\item \textbf{\textcolor{miamired}{Be closely integrated with the statistical and verbal descriptions of a data set}}
+		\end{itemize}
+	\end{block}
+	\begin{center}
+		\tiny Source: From Tufte, E. R. (2001). The visual display of quantitative information. Cheshire, Conn: Graphics Press, P. 13.
+		
+	\end{center}
+
+### Fundamentals of Data Viz: Data Types + Encoding
+
+\begin{center}
+  \href{https://dl.acm.org/doi/pdf/10.1145/22949.22950?casa_token=ribMBBRoenoAAAAA:rg1RxdU0rR91hbGsYjaL0m_TIYMI8WrrrJ58O0W6qJFo8kwawO1nKJLkkBfcD0EQioX6xuFHL5Ug}{\includegraphics[height=0.75\textheight, frame]{../../figures/mackinlay.png}} 
+\end{center}
+Source: Please refer to @mackinlay1986automating for more details on proper and automated data encoding.
+
+### Fundamentals of Data Viz: Grammar of Graphics {.allowframebreaks}
+
+
+In order to create a plot, you:
+
+  1. Call the ggplot() function which creates a blank canvas  
+  2. Specify **aesthetic mappings**, which specifies how you want to map variables to visual aspects. In this case we are simply mapping the *Label* and *Average.Packet.Size* variables to the x- and y-axes.  
+  3. You then add new layers that are geometric objects which will show up on the plot. In this case we add `geom_point()` to add a layer with points (dot) elements as the geometric shapes to represent the data.
+  
+```{r portMapplot, fig.width=6}
+df = read.csv("../../data/Portmap.csv", nrow=1000, stringsAsFactors = T)
+df %<>% select ('Flow.ID','Source.IP','Destination.IP',
+                'Timestamp', 'Flow.Duration', 'Total.Fwd.Packets',
+                'Total.Backward.Packets', 'Max.Packet.Length',
+                'Average.Packet.Size', 'Active.Mean', 
+                'SimillarHTTP', 'Label')
+
+# create canvas
+ggplot(df) +
+  ggtitle("Creating an Empty Canvas")
+
+# variables of interest mapped
+ggplot(df, aes(x=Label, y=Average.Packet.Size)) + 
+  ggtitle("Canvas with variables and no data")
+
+# data plotted: dot plot
+ggplot(df, aes(x=Label, y=Average.Packet.Size)) + geom_point() + 
+  ggtitle("Scatter/Dot Plot: Canvas with variables and data")
+
+# data plotted: bar
+ggplot(df, aes(x=Label, y=Average.Packet.Size)) + 
+  geom_bar(stat="identity") + 
+  ggtitle("Bar Plot: Canvas with variables and data")
+
+# data plotted: hist
+ggplot(df, aes(x=Average.Packet.Size)) + geom_histogram(bins=20) +
+  ggtitle("Histogram: Canvas with variables and data")
+
+# Some nice functions from the Data Explorer Package
+pacman::p_load(DataExplorer)
+
+plot_boxplot(df, by="Label", ncol=3) # fav plot
+
+plot_bar(df[1:20,c('Source.IP','Destination.IP')],
+         title = "Plot's Quality is Impacted by Values of Strings",
+         ncol = 2) # first twenty rows and two factor/string cols
+
+plot_histogram(df, ncol=3)
+```
+
+
+
+# Recap
+
+### Things to Do {.allowframebreaks}
+
+- You are highly encouraged to go through the following materials: (see refs for link) 
+  - **EDA:** Chapter 7 in @rds2016  
+  - **Data Viz:** Chapters 2 and 5 in @wilke2019fundamentals
+  - **ggplot2 Tutorial:** Chapters 2 and 10 in @wickham2020gg. **You should also bookmark the following references**
+    - *ggplot2-book:* @wickham2020gg is freely available at <https://ggplot2-book.org/>
+    - *R cheatsheets:* <https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf>
+  
+
+### References {.allowframebreaks}
+::: {#refs}
+:::
+
+---
+
+\maketitle
