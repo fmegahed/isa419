@@ -1,0 +1,31 @@
+---
+title: "Pycaret test"
+format: html
+jupyter: python3
+---
+
+```{r}
+reticulate::use_condaenv('isa419', required = TRUE)
+```
+
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+
+## Running Code
+
+When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+
+```{python}
+from pycaret.classification import *
+```
+
+You can add options to executable code like this 
+
+```{python}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
