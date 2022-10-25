@@ -117,7 +117,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 </header>
 
-<pre class="{r}"><code>reticulate::use_condaenv('isa419', required = TRUE)</code></pre>
+<pre class="{r}"><code>reticulate::use_condaenv('isa419', required = TRUE)
+reticulate::py_config()
+reticulate::py_run_string('from pycaret.classification import *')</code></pre>
 <section id="quarto" class="level2">
 <h2 class="anchored" data-anchor-id="quarto">Quarto</h2>
 <p>Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <a href="https://quarto.org" class="uri">https://quarto.org</a>.</p>

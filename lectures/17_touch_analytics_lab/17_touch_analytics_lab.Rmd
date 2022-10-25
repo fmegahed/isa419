@@ -1,0 +1,233 @@
+---
+title: "ISA 419: Data Driven Security"
+subtitle: "17 - Touch Analytics Lab"
+author: Fadel M. Megahed
+institute: |
+  | Endres Associate Professor
+  | Department of Information Systems and Analytics
+  | Farmer School of Business
+  | Miami University
+  | Email: fmegahed@miamioh.edu
+  | Office Hours: [Automated Scheduler for Office Hours](https://calendly.com/fmegahed)
+  | 
+date: "Fall 2022"
+output:
+  beamer_presentation:
+    number_sections: false
+    toc: false
+    slide_level: 3
+    includes: 
+      in_header: ../../style_files/structure.txt
+latex_engine: xelatex
+urlcolor: links
+linkcolor: links
+classoption: "aspectratio=169"
+always_allow_html: yes
+bibliography: refs.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      verbose = FALSE,
+                      progress = FALSE,
+                      fig.align = "center",
+                      fig.pos = 'p',
+                      fig.width = 5,
+                      fig.height= 2.5,
+                      allowframebreaks = TRUE,
+                      fig.margin=TRUE,
+                      kable.force.latex = TRUE,
+                      cache = TRUE)
+options(kableExtra.latex.load_packages = FALSE)
+pacman::p_load(kableExtra, tidyverse, xtable)
+```
+
+# Preface 
+
+### Learning Objectives for Today's Lab
+
+\begin{block}{\textbf{Objectives}}
+  \begin{itemize}
+    \item \textbf{Examine an Android Phone's behavioral touch feature dataset}
+    \item \textbf{Replicate the analysis performed by a InfoSec research paper}
+    \item \textbf{Report the code and results in an understandable manner to a general audience}
+  \end{itemize}
+\end{block}
+
+
+# An Overview of the Touchalytics Paper [@frank2012touchalytics]
+
+### Preface
+
+The paper by @frank2012touchalytics is one of the seminal papers, where smart phone touch features are engineered and used for continuous authentication. The paper has over 600 citations, and provides a [website](http://www.mariofrank.net/touchalytics/) that contains:  
+
+  - [The raw data](http://www.mariofrank.net/touchalytics/data.zip) (do not forget to examine the [readme file](http://www.mariofrank.net/touchalytics/readme_data.txt))  
+  - [The extracted features](http://www.mariofrank.net/touchalytics/features.zip) (see the [readme](http://www.mariofrank.net/touchalytics/readme_features.txt))    
+  - [Matlab Script File](http://www.mariofrank.net/touchalytics/extractFeatures.m) for how the features were engineered from the raw data file  
+  - PDFs of their published work; for our lab, we are interested in the [Touchalytics Paper](http://www.mariofrank.net/paper/touchalytics.pdf)
+  
+
+### Paper's Motivation [1]
+
+  - There is limited work on continuous authentication for touchscreen devices  
+  - Use of smart phone devices typically involves "atomic navigation behavior", which consists of simple and short movements  
+  - Is it possible to authenticate users while they perform basic navigation steps on a touchscreen device and without any dedicated
+and explicit security action that requires attention from the user?
+
+
+### Paper's Motivation [2]
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.75\textheight, keepaspectratio]{../../figures/touchMotivation.PNG}
+\caption{Strokes from eight different users, each reading three different texts on an Android Phone.}
+\end{figure}
+
+
+
+
+### Paper's General Idea and Goals {.allowframebreaks}
+
+There are two phases for learning and classifying touch behavior.    
+
+  - **Enrollment Phase:** Phase where the system relies on a conventional authentication approach (e.g., password). The authors distinguish between two different "trigger-actions":      
+    - Sliding horizontally over the screen; for example, to browse through images  
+    - Sliding vertically over the screen to move conten up and down  
+    - Note that the authors decided to use only on on **single touch gestures**
+ -  **Continuous Authentication Phase:** During this phase, the system continuously tracks all strokes and the classifier estimates if they were made by the legitimate user. For *t* consecutive negative classification results, the system resorts back to the initial entry-point based authentication method and challenges the user. 
+ 
+ \begin{block}{\textbf{Study Goals}}
+ \textbf{The main goal of their study is to analyze how robustly our proposed framework can distinguish users from each other.}
+  \begin{itemize}
+    \item What is the probability of rejecting a legitimate user?
+    \item What is the probability of accepting an attacker?
+    \item How long does the classifier need to make an authentication decision?
+    \item How robust is the classification within one session, across multiple sessions, and after one week?
+  \end{itemize}
+ \end{block}
+    
+
+
+### Experimental Protocol
+
+- Sessions 1-3 occured during the same day and seperated by a questionnaire.  This is followed by a second phase, where users were asked to spot differences between images. 
+- Sessions 6-7 occured one week post the sessions in the previous bullet.
+
+
+### Touch Analytics [1]
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.7\textheight, keepaspectratio, frame]{../../figures/touchDiffs.PNG}
+\caption{Stroke features projected on a 2D-subspace. The user ID is given as a colored number.}
+\end{figure}
+
+### Touch Analytics [2]
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.75\textheight, keepaspectratio, frame]{../../figures/touchCorr.PNG}
+\caption{Correlation among the 30 features.}
+\end{figure}
+
+
+### Classification Schemes: kNN {.allowframebreaks}
+
+**The kNN (k-Nearest Neighbors) algorithm has the following features:**    
+  - Supervised learning algorithm  
+  - Utilizes feature similarity  
+  - Lazy algorithm since it uses the entire training data to make a decision instead of coming up with a discrminative function  
+
+The following kNN Slides are based on the [edureka.co Blog](https://www.edureka.co/blog/knn-algorithm-in-r/).
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN1.PNG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN2.PNG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN3.PNG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN4.PNG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN5.PNG}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/kNN6.PNG}
+\end{figure}
+
+\begin{block}{Pseudo Code}
+  \begin{itemize}
+  \item Calculate $D(x, x_i)$, where $i =1, 2, ..., n$ and $D$ is the Euclidean measure between the data points.
+  \item The calculated Euclidean distances must be arranged in ascending order.
+  \item Initialize $k$ and take the first $k$ distances from the sorted list.
+  \item Figure out the $k$ points for the respective $k$ distances.
+  \item Calculate $k_i$, which indicates the number of data points belonging to the $i$th class among $k$ points i.e. $k \ge 0$
+  \item If $k_i > k_j \forall i \ne j$; put $x$ in class $i$.
+  \end{itemize}
+\end{block}
+
+Note that in the paper of @frank2012touchalytics, they have used $k \in [1, 3, 5, 7]$ to avoid ties.
+
+
+### Classification Schemes: SVM {.allowframebreaks}
+
+**In this paper, they used it for binary classification. The used a RBF for the kernel, which means that they assumed that the data is not linearly seperable.**
+
+The following SVM Slides are based on the [edureka.co Blog](https://www.edureka.co/blog/support-vector-machine-in-python/).
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/svm1.png}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.8\textheight, keepaspectratio, frame]{../../figures/svm-2.png}
+\end{figure}
+
+
+### Lab Deliverables {.allowframebreaks}
+
+For the purposes of Lab 04, I would like you to replicate the analysis performed by @frank2012touchalytics. You can start with the [The extracted features](http://www.mariofrank.net/touchalytics/features.zip) and simplify the problem into a binary classification problem, where you will need to recode the data at least 40 times such that for a given user we compare him/her to everyone else. 
+
+\begin{figure}
+\centering
+\includegraphics[width=\textwidth, height=0.5\textheight, keepaspectratio, frame]{../../figures/touchResults.PNG}
+\end{figure}
+
+\begin{block}{Rubric}
+  \begin{itemize}
+    \item A student will score 80\% on the assignment if they can successfully use both kNN and SVM to distnguish one user of their choice from the rest of the group based on the \textbf{inter-week} sessions.
+    \item A student will score 100\% on the assignment if they can successfully use both kNN and SVM to distnguish one user of their choice from the rest of the group based on three different training approaches: (a) intra-session, (b) inter-session, and (c) inter-week sessions.
+    \item A student will score 120\% on the assignment if they can successfully use both kNN and SVM to distnguish all users from the rest of the group based on three different training approaches: (a) intra-session, (b) inter-session, and (c) inter-week sessions.
+  \end{itemize}
+\end{block}
+
+This lab assignment is due on Oct 31, 2022. Class time on April 1st will be used to answer some initial questions pertaining to this assignment. You can work individually or in a group of two. Your submission should include: (a) your Notebook, and (b) a CSV file with results from your code.
+
+### References {.allowframebreaks}
+::: {#refs}
+:::
+
+
+---
+
+\maketitle

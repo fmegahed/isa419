@@ -1,0 +1,49 @@
+---
+title: "Pycaret test"
+
+---
+
+```{r python_setup}
+reticulate::use_condaenv('isa419', required = TRUE)
+reticulate::py_config()
+reticulate::py_run_string('from pycaret.classification import *')
+```
+
+
+## R Reading the Data
+
+```{r etl_data}
+pacman::p_load(tidyverse, magrittr)
+
+df = read_csv("../../data/Portmap.csv")
+
+df %<>% select ('Flow Duration', 'Total Fwd Packets',
+                'Total Backward Packets', 'Max Packet Length',
+                'Average Packet Size', 'Active Mean', 'Label')
+
+df %<>% group_by(Label) %>% sample_n(size = 4000)
+
+df %<>% ungroup() 
+
+levels(df$Label) = list(Portmap = "Portmap", 
+                        Benign = "BENIGN")
+
+table(df$Label)
+
+```
+
+
+## Python Code
+
+```{python}
+df = r.df
+exp = setup(data = df, target = 'Label', session_id=123) 
+```
+
+You can add options to executable code like this 
+
+```{python}
+best_model = compare_models()
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).
