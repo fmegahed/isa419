@@ -1,0 +1,176 @@
+---
+title: "ISA 419: Data Driven Security"
+subtitle: "20 - Web Server Logs"
+author: Fadel M. Megahed
+institute: |
+  | Endres Associate Professor
+  | Department of Information Systems and Analytics
+  | Farmer School of Business
+  | Miami University
+  | Email: fmegahed@miamioh.edu
+  | Office Hours: [Automated Scheduler for Office Hours](https://calendly.com/fmegahed)
+  | 
+date: "Fall 2022"
+output:
+  beamer_presentation:
+    number_sections: false
+    toc: false
+    slide_level: 3
+    includes: 
+      in_header: ../../style_files/structure.txt
+latex_engine: xelatex
+urlcolor: links
+linkcolor: links
+classoption: "aspectratio=169"
+always_allow_html: yes
+bibliography: refs.bib
+link-citations: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      verbose = FALSE,
+                      progress = FALSE,
+                      fig.align = "center",
+                      fig.pos = 'p',
+                      fig.width = 5,
+                      fig.height= 2.5,
+                      allowframebreaks = TRUE,
+                      fig.margin=TRUE,
+                      kable.force.latex = TRUE,
+                      cache = TRUE)
+options(kableExtra.latex.load_packages = FALSE)
+pacman::p_load(kableExtra, tidyverse, xtable)
+```
+
+# Preface 
+
+### Learning Objectives for Today's Class
+
+\begin{block}{\textbf{Objectives}}
+  \begin{itemize}
+    \item \textbf{Understand and explain the basic format of a server log}
+    \item \textbf{Examine a web Server Log Dataset}
+    \item \textbf{Identify one type of attack based on the dataset}
+  \end{itemize}
+\end{block}
+
+
+# Understand the basic format of a Web Server Log
+
+### Web Servers
+
+Let us consider the following URL [https://miamioh.edu/fsb/academics/isa/index.html](https://miamioh.edu/fsb/academics/isa/index.html). My web browser will translate this URL into a connect to [www.miamioh.edu](www.miamioh.edu) with the following HTTP request:
+
+```{r webServer1, eval=F}
+GET fsb/academics/isa/index.html HTTP  
+Host: www.miamioh.edu
+```
+
+The web server ib [www.miamioh.edu](www.miamioh.edu) will append the given path to the path of its root directory, giving the following result (assuming an Apache Server):
+
+```{r webServer2, eval=F}
+home/www/fsb/academics/isa/index.html
+```
+
+The web server then reads the file, if it exists, and sends a response to the client's web browser. The response will describe the content of the file and contain the file itself or an error message will return saying that the file does not exist or is unavailable.
+
+### Web Server Logs: CLF {.allowframebreaks}
+
+Per the [Appache Manual](https://httpd.apache.org/docs/2.4/logs.html), log entries written in a format known as the Common Log Format (CLF) will look something like this
+
+```{r webLog, eval=F}
+127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET /apache_pb.gif HTTP/1.0" 
+200 2326
+```
+**Each part of this log entry is described below:**  
+
+- **127.0.0.1:** This is the IP address of the client (remote host) which made the request to the server.  
+
+- **-:** The "hyphen" in the output indicates that the requested piece of information is not available. 
+
+- **frank:** This is the userid of the person requesting the document as determined by HTTP authentication.  If the status code for the request (see below) is 401, then this value should not be trusted because the user is not yet authenticated.  
+
+- **[10/Oct/2000:13:55:36 -0700]:** The timestamp the request was received, with -0700 indicating the time zone  
+
+- **"GET /apache_pb.gif HTTP/1.0":** The request line from the client is given in double quotes:  
+    - First, the method used by the client is GET.   
+    - Second, the client requested the resource /apache_pb.gif, and   
+    - Third, the client used the [protocol](https://www.computernetworkingnotes.com/networking-tutorials/types-of-network-protocols-explained-with-functions.html) HTTP/1.0
+    
+- **200:** This is the status code that the server sends back to the client. This information is very valuable, because it reveals whether the request resulted in a successful response (codes beginning in 2), a redirection (codes beginning in 3), an error caused by the client (codes beginning in 4), or an error in the server (codes beginning in 5).  
+
+- **2326:** The size of the object returend to the client, not including the response headers. 
+
+
+### Common Web Networking Protocols
+
+\begin{figure}
+\centering 
+\href{https://www.computernetworkingnotes.com/networking-tutorials/types-of-network-protocols-explained-with-functions.html}{\includegraphics[width=\textwidth, height=0.75\textheight, keepaspectratio, frame]{../../figures/protocols.PNG}}
+\end{figure}
+
+
+### Types of Attacks Targeting Web Systems {.allowframebreaks}
+
+The [Survey on Attacks targeting Web based System through Application Layer](http://medianet.kent.edu/surveys/DR05S-applicationattack-amitpandey/index.html) provides a nice overview of different types of attacks affecting web based systems. The following two slides are utilizing information from that survey; you should read the page and do your examination of some of these concepts. 
+
+\begin{figure}
+\centering 
+\href{http://medianet.kent.edu/surveys/DR05S-applicationattack-amitpandey/index.html}{\includegraphics[width=\textwidth, height=0.55\textheight, keepaspectratio, frame]{../../figures/types.jpg}}
+\end{figure}
+
+```{r scrape2, echo=F, cache=TRUE, results='asis'}
+pacman::p_load(magrittr, rvest, tidyverse)
+"http://medianet.kent.edu/surveys/DR05S-applicationattack-amitpandey/index.html" %>% read_html() %>% html_node("table") %>% html_table() -> scrapedTable
+
+colnames(scrapedTable) = scrapedTable[1,]
+scrapedTable %<>% .[-1,] %>%  xtable()
+align(scrapedTable) = "lccp{1.75in}cp{1.25in}"
+print(scrapedTable, include.rownames=FALSE, size="\\footnotesize", comment = F)
+```
+
+# Examine a Web Server Dataset
+
+### Class Activity
+Consider the dataset in [Stanford Server Logs](http://web.stanford.edu/class/cs259d/hw/server-log.txt). We know that one type of attack occurred around 8 am. By building on the code below, please address the following:  
+
+- Please identify the exact date and time.   
+- What are the characteristics of that attack? (i.e. what anomalies are shown in the feature(s))  
+- What is the type of attack deployed by the attackers? 
+
+```{r activity, eval=FALSE}
+pacman::p_load(tidyverse, magrittr, lubridate, hms, iptools)
+df = read.table("http://web.stanford.edu/class/cs259d/hw/server-log.txt",
+                sep=" ", stringsAsFactors = F) %>% .[,-1]
+colnames(df) = c('StartDate', 'StartTime', 'Duration', 'Server', 
+                 'SourcePort', 'DestinationPort', 'SourceIP', 
+                 'DestinationIP')
+```
+
+
+# Project Description
+
+## Project Description and Expectations
+
+Let us discuss this in more detail (see [Canvas Project Description](https://miamioh.instructure.com/courses/179824/assignments/2244343) for more details).
+
+
+
+# Recap
+
+### What you should have learned from today's class?
+
+\begin{block}{\textbf{Objectives}}
+  \begin{itemize}
+    \item \textbf{Understand and explain the basic format of a server log}
+    \item \textbf{Examine a web Server Log Dataset}
+    \item \textbf{Identify one type of attack based on the dataset}
+  \end{itemize}
+\end{block}
+
+---
+
+\maketitle
