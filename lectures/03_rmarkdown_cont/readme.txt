@@ -1,1 +1,0 @@
-Please refer to class_code folder for details. We completed the analysis in R Markdown and talked about parameterized reporting.
