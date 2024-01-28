@@ -1,0 +1,19 @@
+short_description,long_description,date,grouping
+Vulnerability Discovered,Apache Struts CVE-2017-5638 reported,3/7/2017,Warning & Response
+DHS Notifies Equifax,US Department of Homeland Security informs Equifax,3/8/2017,Warning & Response
+Internal Delays,"Patch notification, failed scans",3/9/2017,Internal Issues
+Breach,Hackers begin accessing information,5/13/2017,System Compromise
+Breach Detection & Initial Response,"Suspicious activity, patch & shutdown",7/29/2017,Internal Issues
+Executive Actions & Public Scrutiny,Stock sales raise concerns,8/1/2017,Public Scrutiny
+Public Disclosure & Investigation,Announcement & investigation begins,9/7/2017,Public Scrutiny
+Investigation & Impact Assessment,"Vulnerability confirmed, scope identified",9/15/2017,Public Scrutiny
+Leadership Change & Fallout,"CEO resigns, public pressure mounts",9/26/2017,Public Scrutiny
+Consumer Protection & Recovery,"Credit lock launch, recovery efforts",1/31/2018,Recovery & repercussions
+Continued Repercussions & More Victims,"New discoveries, ongoing impact",3/1/2018,Recovery & repercussions
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
+,,,
