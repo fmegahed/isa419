@@ -1,0 +1,210 @@
+---
+title: "ISA 419: Data-Driven Security"
+subtitle: "02: Python Programming Basics"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2024"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightSpans: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+                      echo = TRUE,
+                      warning = FALSE,
+                      message = FALSE,
+                      progress = FALSE, 
+                      verbose = FALSE,
+                      dev = 'png',
+                      fig.height = 3,
+                      dpi = 300,
+                      fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+                  base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons", "panelset", "search", "fit_screen", "editable", "clipboard"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+
+## Quick Refresher of Last Class
+
+`r emo::ji("check")` Define **information security (Infosec)**, its **main goals**, and how it fits within a firm’s overall security protocols  
+
+`r emo::ji("check")` Describe the **three main steps** in information security: prevention, detection, and response.
+
+`r emo::ji("check")` Explain why **prevention as a sole security measure is deemed to fail**. 
+
+`r emo::ji("check")` Describe **course structure**, **goals**, and **overview**.  
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- Use pseudocode to map out a problem.  
+
+- Python Syntax, Data Types, and Data Structures  
+
+- Convert data types using type casting  
+
+- Manipulate lists and use methods on lists
+
+
+---
+class: inverse, center, middle
+
+# Use Pseudocode to Map out a Cybersecurity Problem
+
+---
+
+## Background: (Distributed) Denial of Service Attacks
+
+<center>
+<iframe width="810" height="472.5" src="https://www.youtube-nocookie.com/embed/bDAY-oUP0DQ?si=9RiVqrFSJdStTIeS" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</center>
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Credits:** Jeff Crume. (2023) [IBM Technology: Denial of Service Attacks Explained](https://www.youtube.com/watch?v=bDAY-oUP0DQ).
+]
+
+---
+
+## Simplifying our Task Ahead: SYN Flood Attacks
+
+- We will focus on a **SYN flood attack**, a form of DDoS attack.
+- Attackers send a succession of SYN requests to a target's system.
+
+
+
+---
+
+
+```{python pseudo_code, eval=FALSE}
+BEGIN DDoS_Detection
+    `SET` threshold_limit `to` a significant number representing unusual traffic
+    `SET` time_window `to` the period of monitoring traffic (e.g., per minute)
+    `SET` ip_request_count `to` an empty data structure (e.g., dictionary)
+
+    for each request in network_traffic
+        `GET` ip_address from request
+        `GET` request_time from request
+
+        if ip_address is not in ip_request_count
+            `SET` ip_request_count[ip_address] to 1
+        else
+            `INCREMENT` ip_request_count[ip_address] by 1
+
+        if ip_request_count[ip_address] exceeds threshold_limit within time_window
+            `FLAG` ip_address as potential DDoS source
+            `TAKE` necessary action (e.g., block IP, alert admin)
+
+        if time elapsed > time_window
+            `RESET` ip_request_count for each ip_address
+
+    `END` FOR loop
+END DDoS_Detection
+```
+
+
+
+```{python, echo = FALSE, eval=FALSE}
+import random
+import time
+
+# Configuration
+threshold_limit = 100  # Threshold of connections per time window
+time_window = 60  # Time window in seconds
+monitoring_period = 300  # Total monitoring period in seconds
+regular_ips = [f"192.168.1.{i}" for i in range(2, 255)] # Regular traffic IPs
+attacker_ip = "192.168.1.1" # Attacker's IP generating excessive traffic
+
+# Simulated data
+network_traffic = []
+for _ in range(500):  # Total regular requests
+    network_traffic.append({
+        'ip_address': random.choice(regular_ips),
+        'timestamp': time.time() + random.randint(1, 300)
+    })
+
+# Inject attack traffic from one IP
+for _ in range(200):  # Total attack requests
+    network_traffic.append({
+        'ip_address': attacker_ip,
+        'timestamp': time.time() + random.randint(1, 300)
+    })
+
+# Shuffle the traffic to simulate a more realistic scenario
+random.shuffle(network_traffic)
+
+# Monitoring function
+def detect_ddos(traffic, threshold, window, period):
+    start_time = time.time()
+    ip_request_count = {}
+
+    for request in traffic:
+        current_time = time.time()
+        if current_time - start_time > period:
+            break
+
+        ip_address = request['ip_address']
+        timestamp = request['timestamp']
+
+        # Increment the count for the IP address
+        ip_request_count[ip_address] = ip_request_count.get(ip_address, 0) + 1
+
+        # Check if the threshold is exceeded within the time window
+        if ip_request_count[ip_address] == threshold:
+            time_first_request = min(timestamp for req in traffic if req['ip_address'] == ip_address)
+            if current_time - time_first_request <= window:
+                print(f"Potential DDoS attack detected from {ip_address}")
+
+        # Reset counters for IP addresses not seen within the time window
+        ip_request_count = {ip: count for ip, count in ip_request_count.items() if current_time - timestamp <= window}
+
+# Run the DDoS detection
+detect_ddos(network_traffic, threshold_limit, time_window, monitoring_period)
+
+```
+
