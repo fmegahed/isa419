@@ -49,28 +49,33 @@ def simulate_ddos(threshold_limit, time_window, monitoring_period, regular_reque
     return attack_detected
 
 # Streamlit UI
-st.title('DDoS Attack Simulation and Detection')
+def main():
+    st.title('DDoS Attack Simulation and Detection')
+    
+    # Sidebar for simulation configuration
+    st.sidebar.header('Simulation Configuration')
+    threshold_limit = st.sidebar.number_input('Threshold Limit', min_value=10, value=100)
+    time_window = st.sidebar.number_input('Time Window (seconds)', min_value=10, value=60)
+    monitoring_period = st.sidebar.number_input('Monitoring Period (seconds)', min_value=60, value=300)
+    regular_requests = st.sidebar.number_input('Number of Regular Requests', min_value=0, value=500)
+    attack_requests = st.sidebar.number_input('Number of Attack Requests', min_value=0, value=200)
+    
+    # Sidebar for creator information
+    st.sidebar.header('About This Application')
+    st.sidebar.markdown('**Created by:** [Fadel M. Megahed](https://miamioh.edu/fsb/directory/?up=/directory/megahefm)')
+    st.sidebar.markdown('**Version:** 1.0')
+    st.sidebar.markdown('**Date:** January 30, 2024')
+    st.sidebar.text('This application simulates network traffic to detect potential DDoS attacks, allowing users to interactively adjust simulation parameters.')
+    
+    # Button to run simulation
+    if st.button('Run Simulation'):
+        with st.spinner('Simulating network traffic and detecting DDoS attacks...'):
+            detected_attacks = simulate_ddos(threshold_limit, time_window, monitoring_period, regular_requests, attack_requests)
+            if detected_attacks:
+                st.success(f"DDoS attack detected from the following IP(s): {', '.join(detected_attacks)}")
+            else:
+                st.info("No DDoS attack detected.")
 
-# Sidebar for simulation configuration
-st.sidebar.header('Simulation Configuration')
-threshold_limit = st.sidebar.number_input('Threshold Limit', min_value=10, value=100)
-time_window = st.sidebar.number_input('Time Window (seconds)', min_value=10, value=60)
-monitoring_period = st.sidebar.number_input('Monitoring Period (seconds)', min_value=60, value=300)
-regular_requests = st.sidebar.number_input('Number of Regular Requests', min_value=0, value=500)
-attack_requests = st.sidebar.number_input('Number of Attack Requests', min_value=0, value=200)
 
-# Sidebar for creator information
-st.sidebar.header('About This Application')
-st.sidebar.markdown('**Created by:** [Fadel M. Megahed](https://miamioh.edu/fsb/directory/?up=/directory/megahefm)')
-st.sidebar.markdown('**Version:** 1.0')
-st.sidebar.markdown('**Date:** January 30, 2024')
-st.sidebar.text('This application simulates network traffic to detect potential DDoS attacks, allowing users to interactively adjust simulation parameters.')
-
-# Button to run simulation
-if st.button('Run Simulation'):
-    with st.spinner('Simulating network traffic and detecting DDoS attacks...'):
-        detected_attacks = simulate_ddos(threshold_limit, time_window, monitoring_period, regular_requests, attack_requests)
-        if detected_attacks:
-            st.success(f"DDoS attack detected from the following IP(s): {', '.join(detected_attacks)}")
-        else:
-            st.info("No DDoS attack detected.")
+if __name__ == "__main__":
+    main()
