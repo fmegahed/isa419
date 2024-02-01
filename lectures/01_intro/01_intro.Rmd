@@ -264,7 +264,10 @@ Effective cybersecurity **begins** with implementing diverse risk management con
 - **Physical:** In addition to securing a firm’s premises through doors/locks/etc., typical risk
 management controls utilize the:  
     * Principal of separation of duties
-    
+
+???
+See [IBM's 5 Principles for Cyber Architecture](https://www.youtube.com/watch?v=jq_LZ1RFPfU&ab_channel=IBMTechnology) for more details.
+
 
 ---
 
@@ -603,6 +606,9 @@ class: inverse, center, middle
   - Apache Struts CVE-2017-5638.  
   - Equifax's system was unpatched.  
 
+???
+See the HBS case study under references for more details.
+
 
 ---
 
@@ -687,7 +693,7 @@ class: inverse, center, middle
 
 ---
 
-# Summary of Main Points
+## Summary of Main Points
 
 By now, you should be able to do the following:  
 
@@ -702,7 +708,7 @@ By now, you should be able to do the following:
 
 ---
 
-# 📝 Review and Clarification 📝
+## 📝 Review and Clarification 📝
 
 1. **Class Notes**: Take some time to revisit your class notes for key insights and concepts.
 2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the session ends.
