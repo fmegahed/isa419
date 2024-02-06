@@ -773,7 +773,7 @@ class: center, inverse, middle
 .pull-right[
 - **Slicing:** Accessing a subset of elements in a list, using the `:` operator, where: `my_list[start:stop:step]`.   
   - If `start` not provided, it defaults to 0   
-  - If `end` is not provided, it defaults to the length of the list.  
+  - If `stop` is not provided, it defaults to the length of the list.  
   - If `step` is not provided, it defaults to 1.    
       * `my_list[:3]` returns the first three elements.  
       * `my_list[3:]` returns all elements from the fourth to the last.  
