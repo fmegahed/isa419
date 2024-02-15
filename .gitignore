@@ -26,3 +26,4 @@ class_code/apikey.R
 
 class_activities/
 .Rprofile
+data/GeoLite2-City.mmdb
