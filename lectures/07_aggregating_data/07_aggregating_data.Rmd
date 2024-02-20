@@ -1,0 +1,316 @@
+---
+title: "ISA 419: Data-Driven Security"
+subtitle: "07: Aggregating Data with Pandas"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2024"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightSpans: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  progress = FALSE, 
+  verbose = FALSE,
+  dev = 'png',
+  fig.height = 3,
+  dpi = 300,
+  fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+        base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons", "panelset", "search", "fit_screen", "editable", "clipboard"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+
+## Quick Refresher of Last Class
+
+`r emo::ji("check")` Ensure that your imported data is **technically correct** (rename columns and fix `dtypes`) 
+
+`r emo::ji("check")` Clean data to ensure that your data is consistent  
+
+`r emo::ji("check")` Understand the difference between `concatenate`, `merge`, and `join`.
+
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- Understand how to change the unit of analysis by grouping and aggregating data.  
+
+- Use the `agg()` function to do aggregations on grouped data.  
+
+---
+class: inverse, center, middle
+
+# Grouping and Aggregating Data
+
+---
+
+## Our Data
+
+- We will use the `merged_ips` data set from the previous class to demonstrate how to group and aggregate data.
+
+.font80[
+```{python merged_ips}
+import pandas as pd
+
+toxic_ips = pd.read_csv(
+  "https://raw.githubusercontent.com/fmegahed/isa419/main/data/listed_ip_90_all.csv", 
+  header = None, names = ['ip', 'frequency', 'lastseen']
+)
+
+geolocation = pd.read_csv(
+  'https://raw.githubusercontent.com/fmegahed/isa419/main/data/ip_geolocation.csv', 
+  names = ['ip', 'country', 'city', 'latitude', 'longitude']
+)
+
+merged_ips = (
+  toxic_ips
+  .merge(right = geolocation, how = 'left', on ='ip')
+  .dropna()
+  .assign( lastseen = lambda df: df['lastseen'].astype('datetime64[ns]') )
+)
+merged_ips.dtypes[0:3]
+```
+]
+
+
+---
+
+## Aggregating Data
+
+- The `agg()` function is used to apply one or more functions to a column in a data frame.  
+
+```{r agg_parameters, echo=FALSE}
+knitr::include_url("https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.agg.html", height = '440px')
+```
+
+
+---
+
+## Aggregating Data
+
+```{r agg_options, echo=F, out.width = "65%", fig.align = "center", fig.alt='The three approaches to aggregating data in Pandas'}
+knitr::include_graphics("https://pbpython.com/images/agg-options.png")
+```
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** [Chris Moffitt. (2020). Comprehensive Guide to Grouping and Aggregating with Pandas.](https://pbpython.com/agg-options.html).
+
+]
+
+
+
+---
+
+## Grouping and Aggregating Data
+
+- Grouping and aggregating data are common operations in data analysis.  
+
+- Grouping data is the process of splitting data into groups based on some criteria.  
+
+- Aggregating data is the process of applying a function to each group, producing a single value for each group, i.e.:  
+    + number of rows will equal to the number of groups.  
+    + number of columns will equal to the number of functions applied.  
+    
+
+- The `agg()` function's input can be a dictionary, list, or a tuple (as shown in the image in the previous slide).
+
+
+---
+
+## Grouping & Aggregating Data with a Dictionary
+
+.font80[
+```{python group_dict1}
+grouped_merged_ips1 =(
+  merged_ips.groupby('country').agg(
+    {
+      'frequency': ['count', 'sum', 'mean', 'median', 'max'],
+    }
+  )
+)
+
+# printing the top three rows and the column names
+grouped_merged_ips1.head(n=3)
+grouped_merged_ips1.columns 
+```
+]
+
+
+---
+
+## Grouping & Aggregating Data with a Dictionary (Cont.)
+
+.font80[
+```{python group_dict2}
+# flattening the multi-index for column names
+grouped_merged_ips1.columns = ['_'.join(col).strip() for col in grouped_merged_ips1.columns.values]
+
+# print the new column names
+grouped_merged_ips1.columns 
+```
+]
+
+---
+
+## Grouping & Aggregating Data with a Tuple
+
+.font80[
+```{python group_tuple}
+grouped_merged_ips2 =(
+  merged_ips.groupby('country').agg(
+    freq_count = ('frequency', 'count'),
+    freq_sum = ('frequency', 'sum'),
+    freq_mean = ('frequency', 'mean'),
+    freq_median = ('frequency', 'median'),
+    freq_max = ('frequency', 'max')
+  )
+)
+
+# printing the bottom eight rows
+grouped_merged_ips2.tail(n=8)
+```
+]
+
+
+---
+
+## Grouping & Aggregating Data: Jazz It Up
+
+.font80[
+```{python sparklines}
+import numpy as np
+from sparklines import sparklines
+
+def sparkline_str(x):
+    bins=np.histogram(x)[0] # from numpy
+    sl = ''.join(sparklines(bins))
+    return sl
+  
+grouped_merged_ips3 =(
+  merged_ips
+  .groupby('country')
+  .agg(
+    freq_count = ('frequency', 'count'),
+    freq_sum = ('frequency', 'sum'),
+    freq_median = ('frequency', 'median'),
+    freq_max = ('frequency', 'max'),
+    freq_sparkline = ('frequency', sparkline_str) #<<
+  )
+  .query('country in ["United States", "China"]')
+  .reset_index() #<<
+)
+
+# printing the two rows
+grouped_merged_ips3.tail(n=2)
+
+```
+]
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Notes:** For additional styling options for your printout, see [Table Visualization](https://pandas.pydata.org/pandas-docs/stable/user_guide/style.html) and [Styling with Pandas](https://pbpython.com/styling-pandas.html).
+]
+
+
+---
+
+## Performing your Own Aggregations
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+- In [Google Colab](https://colab.research.google.com/), build on our approach in class to compute the following:  
+    + Compute the median frequency by `country` and `city`.  
+    + Compute the median latitude  by `country`.
+]
+
+.panel[.panel-name[Hints]
+
+- You can pass multiple columns in the `groupby` function using a list.
+
+- Check the `dtype` for latitude and ensure that you data is technically correct.  
+]
+
+]
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Understand how to change the unit of analysis by grouping and aggregating data.  
+
+- Use the `agg()` function to do aggregations on grouped data.  
+
+
+---
+
+## 📝 Review and Clarification 📝
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights and concepts.
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the end of class.
+3. **Questions**: Please don't hesitate to ask for clarification on any topics discussed in class. It's crucial not to let questions accumulate. 
+
