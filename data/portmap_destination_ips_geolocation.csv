@@ -1,4 +1,4 @@
-ip,country,city,atitude,ongitude
+ip,country,city,latitude,longitude
 172.217.10.98,United States,,37.751,-97.822
 172.217.7.2,United States,,37.751,-97.822
 172.217.9.238,United States,,37.751,-97.822

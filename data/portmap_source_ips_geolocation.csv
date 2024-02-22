@@ -1,4 +1,4 @@
-ip,country,city,atitude,ongitude
+ip,country,city,latitude,longitude
 172.217.9.238,United States,,37.751,-97.822
 93.184.216.180,United States,Lombard,41.874,-88.0038
 54.192.55.39,United States,,37.751,-97.822
