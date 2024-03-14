@@ -1,0 +1,371 @@
+---
+title: "ISA 419: Data-Driven Security"
+subtitle: "14: Regression Analysis"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2024"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightSpans: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  progress = FALSE, 
+  verbose = FALSE,
+  dev = 'png',
+  fig.height = 3,
+  dpi = 300,
+  fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+        base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons", "panelset", "search", "fit_screen", "editable", "clipboard"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+
+## Quick Refresher of Last Class
+
+`r emo::ji("check")` Define clustering.    
+
+`r emo::ji("check")` Explain the $k-$means clustering algorithm for numeric datasets.  
+
+`r emo::ji("check")` Implement the $k-$means algorithm in Python using the `pycaret` package.  
+
+`r emo::ji("check")` Describe scenarios where other/advanced clustering algorithms are needed.  
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- Describe the basic concepts of regression analysis, including the roles of independent and dependent variables.  
+
+- Assess regression models using metrics like R-squared and Mean Squared Error and interpret the results.   
+
+- Describe the two modeling mindsets: explanatory and predictive.
+
+
+
+---
+
+class: inverse, center, middle
+
+# What is regression analysis?
+
+
+---
+
+## An Overview of Regression Models
+
+- **Given:** $(x_1, y_1), \ (x_2, y_2), \ \dots , (x_n, y_n)$.  
+
+- Learn a function $f(x)$ to predict $y$ given $x$.  
+
+  + If $y$ is a continuous variable, we do have a regression type problem.  
+  
+  + In this class, we will **not** limit ourselves to simple and multiple linear regression models. Hence, we will also explore: (a) more advanced linear regression models (e.g., LASSO), (b) non-linear regression models (e.g., polynomial regression ), and (c) machine learning models like decision trees, random forests, etc.   
+      * Simple linear regression: single predictor $x \rightarrow y$.  
+      * Multiple linear regression: multiple predictors $x_1, x_2, \dots, x_p \rightarrow y$.
+
+
+---
+
+## Simple Linear Regression
+
+.font90[
+- Simple linear regression is a statistical method that allows us to summarize and study the relationship between a **response variable** and **one predictor variable**.  
+
+$$Y_i = \beta_0 + \beta_1X_i + \varepsilon_i$$
+
+where:  
+  - $Y_i$ is the dependent variable for the $i^{th}$ observation.  
+  - $X_i$ is the independent variable for the $i^{th}$ observation.  
+  - $\beta_0$ is the intercept, which is the value of $Y$ when $X=0$.  
+  - $\beta_1$ is the slope, which is the change in $Y$ for a one-unit change in $X$.  
+  - $\varepsilon_i$ is the error term, i.e., the difference between observed value of $Y$ and its predicted value from the model.  
+      + It captures the effect of all other factors that influence the dependent variable.  
+      + We assume that the error term is ~ $N(0, \sigma^2)$.
+]
+
+
+---
+
+## Recall ISA 225: A Simple Linear Regression Example
+
+`r countdown(minutes = 10, seconds = 0, top = 0, font_size = "2em")`
+
+- Using any software of your choice, analyze the [zeroAccessUFO.csv](https://github.com/fmegahed/isa419/raw/main/data/zeroAccessUFO.csv)  dataset by answering the following questions:  
+
+  1. Plot the relationship between the number of UFO sightings ($x=$ufo2010) and the number of zeroAccess infections ($y=$infections).  
+  2. Use the plot to determine if a linear relationship exists between the two variables.  
+  3. If a linear relationship exists, fit a simple linear regression model to the data.  
+  4. Describe the goodness of fit of the model.  
+  5. What is your conclusion?
+  
+
+```{r zero_access, include=FALSE, eval = FALSE}
+zero_access <- readr::read_csv("data/zeroAccessUFO.csv")
+
+# question 1
+ggplot(zero_access, aes(x = ufo2010, y = infections)) +
+  geom_point() +
+  labs(title = "Relationship between UFO Sightings and ZeroAccess Infections",
+       x = "Number of UFO Sightings",
+       y = "Number of ZeroAccess Infections") +
+  geom_smooth(method = "lm", se = FALSE)
+  
+# question 2
+cor(zero_access$ufo2010, zero_access$infections)
+
+# question 3
+lm_model <- lm(infections ~ ufo2010, data = zero_access)
+
+# question 4
+summary(lm_model)
+
+rmse <- round(sqrt(mean(resid(lm_model)^2)), 2)
+coefs <- coef(lm_model)
+b0 <- round(coefs[1], 2)
+b1 <- round(coefs[2],2)
+r2 <- round(summary(lm_model)$r.squared, 2)
+
+```
+
+
+```{python zero_access_py, include=FALSE, eval = FALSE}
+# use pycaret, plotnine, and pandas/numpy to show the same thing in Python
+
+import pandas as pd
+import numpy as np
+from pycaret.regression import *
+from plotnine import *
+
+zero_access = pd.read_csv("data/zeroAccessUFO.csv")
+zero_access.info()
+
+# question 1
+zero_access.plot.scatter(x = 'ufo2010', y = 'infections')
+
+# question 1 alternate solution
+(
+    ggplot(zero_access, aes(x = 'ufo2010', y = 'infections')) +
+    geom_point() +
+    labs(title = "Relationship between UFO Sightings and ZeroAccess Infections",
+         x = "Number of UFO Sightings",
+         y = "Number of ZeroAccess Infections") +
+    geom_smooth(method = "lm", se = False)
+)
+
+# question 2
+zero_access[['ufo2010', 'infections']].corr()
+
+# questions 3 and 4
+s = setup(data = zero_access, target = 'infections', session_id = 123, train_size = 0.8, keep_features = ['ufo2010'])
+
+lm_model = create_model('lr')
+
+# bonus stuff
+evaluate_model(lm_model)
+
+create_app(lm_model)
+```
+
+---
+
+## "Miami Univeristy Links UFO Sightings to ZeroAccess Infections"
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+- **Question 1:** What happens if you: (a) add `pop` to your model to fit a multiple linear regression model? and (b) fit a single linear regression model using `pop` alone as the predictor?  
+
+- **Question 2:** Compute the correlation between `pop` and `ufo2010`.  
+
+- **Question 3:** Describe what you have learned from these two exercises.
+
+.can-edit.key-activity12[
+- **Q1:** Edit me in your web browser.  
+
+- **Q2:** Edit me.  
+
+- **Q3:** Edit me.
+
+] 
+
+
+---
+class: inverse, center, middle
+
+# On the Difference between R and Python
+
+---
+
+## R and Python Implementations: A Brief Comparison
+
+.font80[
+| **Aspect**               | **R (using the 'stats' package)**                                                                          | **Python (using 'PyCaret')**                                                                                             |
+|--------------------------|------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------|
+| **Primary Library**      | `stats`                                                                                                    | `PyCaret`                                                                                                                 |
+| **Modeling Mindset**     | Explanatory (focus on understanding the relationships between variables)                                   | Predictive (focus on accurately predicting outcomes)                                                                     |
+| **Data Handling**        | Models often fit on entire dataset without explicit splitting (though splitting can be done manually)      | Automatic splitting of data into training and testing sets, with cross-validation implemented on the training set        |
+| **Implications**         | Emphasis on the quality of the model fit and understanding variable relationships                         | Emphasis on the model's predictive performance on unseen data                                                            |
+| **Model Extraction**     | Easier to extract and interpret models, facilitating detailed analysis of coefficients and statistical tests | More complex to extract specific model details due to a focus on prediction; models are often part of a larger pipeline |
+| **Model Evaluation**     | Emphasis on statistical tests and model fit statistics (e.g., R-squared, p-values)                         | Emphasis on predictive performance metrics (e.g., RMSE, R-squared, MAE)                                                    |
+]
+
+
+---
+
+## The Two Modeling Mindsets: Explanatory Vs. Predictive
+
+- **Explanatory Modeling**:  
+  + Focuses on understanding the relationships between variables.  
+  + Emphasizes the quality of the model fit and the understanding of variable relationships.  
+  + Easier to extract and interpret models, facilitating detailed analysis of coefficients and statistical tests.  
+  + Emphasis on statistical tests and model fit statistics (e.g., R-squared, p-values).  
+  
+
+- **Predictive Modeling**:  
+  + Focuses on accurately predicting outcomes.  
+  + Emphasizes the model's predictive performance on unseen data.  
+  + More complex to extract specific model details due to a focus on prediction; models are often part of a larger pipeline.  
+  + Emphasis on predictive performance metrics (e.g., RMSE, R-squared, MAE).
+  
+
+---
+
+## The Predictive Modeling Mindset
+
+<center>
+<iframe width="840" height="473" src="https://www.youtube.com/embed/nKW8Ndu7Mjw?si=rsuju6A3Jbk6BeVD" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</center>
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Note:** While this video provides a classification example (i.e., a dichotomous dependent variable), the same steps apply to regression ML models. Hence, I am sharing it with you to illustrate the predictive modeling mindset. 
+
+]
+
+
+
+
+---
+
+## Comments: Preparing the Data for Modeling
+
+
+```{r under_over_fitting, echo=FALSE, out.width='90%', fig.align='center', fig.alt="An example of overfitting, underfitting and a model that's 'just right!'"}
+knitr::include_graphics("https://miro.medium.com/v2/resize:fit:640/format:webp/1*tBErXYVvTw2jSUYK7thU2A.png")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Adi Bronshtein. (2017). [Train/Test Split and Cross Validation in Python](https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6).
+]
+
+
+---
+
+## Comments: Preparing the Data for Modeling
+
+```{r cross_validation, echo=FALSE, out.width='90%', fig.align='center'}
+knitr::include_graphics("https://miro.medium.com/v2/resize:fit:4800/format:webp/1*4G__SV580CxFj78o9yUXuQ.png")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Adi Bronshtein. (2017). [Train/Test Split and Cross Validation in Python](https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6). Figure is by [Joseph Nelson](https://medium.com/@josephofiowa).
+]
+
+
+---
+
+## Comments: Preparing the Data for Modeling
+
+```{r k_fold_cross_validation, echo=FALSE, out.width='100%', fig.align='center', fig.alt="Visual Representation the k-folds Cross Validation.'"}
+knitr::include_graphics("https://miro.medium.com/v2/resize:fit:4800/format:webp/1*J2B_bcbd1-s1kpWOu_FZrg.png")
+```
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** Adi Bronshtein. (2017). [Train/Test Split and Cross Validation in Python](https://towardsdatascience.com/train-test-split-and-cross-validation-in-python-80b61beca4b6). Figure is by [Joseph Nelson](https://medium.com/@josephofiowa).
+]
+
+
+
+---
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Describe the basic concepts of regression analysis, including the roles of independent and dependent variables.  
+
+- Assess regression models using metrics like R-squared and Mean Squared Error and interpret the results.   
+
+- Describe the two modeling mindsets: explanatory and predictive.
+
+---
+
+## 📝 Review and Clarification 📝
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights and concepts.
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the end of class.
+3. **Questions**: Please don't hesitate to ask for clarification on any topics discussed in class. It's crucial not to let questions accumulate. 
+

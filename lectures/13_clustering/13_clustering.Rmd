@@ -67,7 +67,7 @@ xaringanExtra::use_extra_styles(
 
 `r emo::ji("check")` Explain the difference between supervised and unsupervised learning.    
 
-`r emo::ji("check")` EUnderstand the importance of different preprocessing steps and when they should be used in ML.  
+`r emo::ji("check")` Understand the importance of different preprocessing steps and when they should be used in ML.  
 
 `r emo::ji("check")` Explain typical error measures used for supervised and unsupervised learning tasks.
 
