@@ -28,3 +28,4 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    03/21    | A Short Introduction to ML Regression      | [16_ml_regression.html](https://fmegahed.github.io/isa419/spring2024/class16/16_ml_regression.html) | [16_ml_regression.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/16_ml_regression.pdf) | [16_ml_regression.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/16_ml_regression.pptx) |
 |      09     |    04/02    | Lab 03: Credit Card Fraud       | -- | -- | -- |
 |           |    04/04    | Lab 03: Credit Card Fraud (Cont.)     | -- | -- | -- |
+|      10     |    04/09    | Lab 03: Credit Card Fraud (Cont.)       | -- | -- | -- |
