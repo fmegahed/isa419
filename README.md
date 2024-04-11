@@ -29,3 +29,4 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |      09     |    04/02    | Lab 03: Credit Card Fraud       | -- | -- | -- |
 |           |    04/04    | Lab 03: Credit Card Fraud (Cont.)     | -- | -- | -- |
 |      10     |    04/09    | Lab 03: Credit Card Fraud (Cont.)       | -- | -- | -- |
+|            |    04/11    | Authentication Using Behavioral Biometrics      | [20_authentication_behavioral_biometrics.html](https://fmegahed.github.io/isa419/spring2024/class20/20_authentication_behavioral_biometrics.html) | [20_authentication_behavioral_biometrics.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/20_authentication_behavioral_biometrics.pdf) | [20_authentication_behavioral_biometrics.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/20_authentication_behavioral_biometrics.pptx) |
