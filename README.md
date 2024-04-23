@@ -30,3 +30,6 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |           |    04/04    | Lab 03: Credit Card Fraud (Cont.)     | -- | -- | -- |
 |      10     |    04/09    | Lab 03: Credit Card Fraud (Cont.)       | -- | -- | -- |
 |            |    04/11    | Authentication Using Behavioral Biometrics      | [20_authentication_behavioral_biometrics.html](https://fmegahed.github.io/isa419/spring2024/class20/20_authentication_behavioral_biometrics.html) | [20_authentication_behavioral_biometrics.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/20_authentication_behavioral_biometrics.pdf) | [20_authentication_behavioral_biometrics.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/20_authentication_behavioral_biometrics.pptx) |
+|     11       |    04/16    | Touchalytics Lab Overview      | [21_touchalytics_lab.html](https://fmegahed.github.io/isa419/spring2024/class21/21_touchalytics_lab.html) | [21_touchalytics_lab.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/21_touchalytics_lab.pdf) | [21_touchalytics_lab.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/21_touchalytics_lab.pptx) |
+|            |    04/18    | Touchalytics Lab (Cont.)      | -- | -- | -- |
+|   12         |    04/23    | Touchalytics Lab (Cont.)      | -- | -- | -- |
