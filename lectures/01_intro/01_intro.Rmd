@@ -1,8 +1,8 @@
 ---
 title: "ISA 419: Data-Driven Security"
 subtitle: "01: Introduction to Cybersecurity"
-author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
-date: "Spring 2024"
+author: '<br>Fadel M. Megahed, PhD <br><br> Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2025"
 output:
   xaringan::moon_reader:
     self_contained: true
@@ -562,7 +562,7 @@ Sys.sleep(20)
 ```
 
 
-```{r read_course_approach, echo=FALSE, out.width='100%', fig.alt="An overview of the instructional approach for ISA 401.", fig.align='center', fig.cap='An overview of the instructional approach for ISA 401.'}
+```{r read_course_approach, echo=FALSE, out.width='100%', fig.alt="An overview of the instructional approach for ISA 419.", fig.align='center', fig.cap='An overview of the instructional approach for ISA 419.'}
 knitr::include_graphics("../../figures/instructional_approach.png") 
 ```
 
@@ -740,6 +740,6 @@ In pairs, you are expected to do a deep dive on the case by reading the followin
 
 **Assignment Details and Submission**
 
-The assignment should be submitted on [Canvas](https://miamioh.instructure.com/courses/209406/assignments/2701214). See the assignment submission page for more details.
+The assignment should be submitted on [Canvas](https://miamioh.instructure.com/courses/229048/assignments/3056659). See the assignment submission page for more details.
 
 ]
