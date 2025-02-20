@@ -416,7 +416,7 @@ sim_attack_df.plot(
 .panel[.panel-name[Task 3]
  - Utilize [this Stack Overflow thread](https://stackoverflow.com/a/67428742/10156153) to convert the scatter plot of the `Source Latitude` and `Source Longitude` variables into an interactive symbols map. 
 
-```{python, echo=FALSE, results='asis'}
+```{python, include=FALSE}
 import plotly.express as px
 
 fig = px.scatter_geo(sim_attack_df, lat="Source Latitude", lon="Source Longitude")
@@ -461,7 +461,7 @@ profile.to_file("../../figures/sim_attack_data_report.html")
 ## Output of `ydata-profiling`
 
 ```{r echo=FALSE}
-knitr::include_url("../../figures/sim_attack_data_report.html", height = "500px")
+knitr::include_url("https://fmegahed.github.io/isa419/figures/sim_attack_data_report.html", height = "500px")
 ```
 
 
