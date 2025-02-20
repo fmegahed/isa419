@@ -1,0 +1,512 @@
+---
+title: "ISA 419: Data-Driven Security"
+subtitle: "09: Visualizing Data with Pandas"
+author: '<br>Fadel M. Megahed, PhD <br><br> Endres Associate Professor <br> Farmer School of Business<br> Miami University<br><br> [`r icons::icon_style(icons::fontawesome("twitter"), fill = "white")` @FadelMegahed](https://twitter.com/FadelMegahed) <br> [`r icons::icon_style(icons::fontawesome("github"), fill = "white")` fmegahed](https://github.com/fmegahed/) <br> [`r icons::icon_style(icons::fontawesome("paper-plane", style = "solid"), fill = "white")` fmegahed@miamioh.edu](mailto:fmegahed@miamioh.edu)<br> [`r icons::icon_style(icons::fontawesome("question"), fill = "white")` Automated Scheduler for Office Hours](https://calendly.com/fmegahed)<br><br>'
+date: "Spring 2024"
+output:
+  xaringan::moon_reader:
+    self_contained: true
+    css: [default, "../../style_files/fonts.css", "../../style_files/my-theme.css"]
+    lib_dir: libs
+    nature:
+      highlightStyle: magula
+      highlightLines: true
+      highlightSpans: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+header-includes:  
+  - "../../style_files/header.html"
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(cache = FALSE,
+  echo = TRUE,
+  warning = FALSE,
+  message = FALSE,
+  progress = FALSE, 
+  verbose = FALSE,
+  dev = 'png',
+  fig.height = 3,
+  dpi = 300,
+  fig.align = 'center')
+
+options(htmltools.dir.version = FALSE)
+
+
+miamired = '#C3142D'
+
+if(require(pacman)==FALSE) install.packages("pacman")
+if(require(devtools)==FALSE) install.packages("devtools")
+if(require(countdown)==FALSE) devtools::install_github("gadenbuie/countdown")
+if(require(xaringanExtra)==FALSE) devtools::install_github("gadenbuie/xaringanExtra")
+if(require(urbnmapr)==FALSE) devtools::install_github('UrbanInstitute/urbnmapr')
+if(require(emo)==FALSE) devtools::install_github("hadley/emo")
+
+knitr::knit_engines$set(python = reticulate::eng_python)
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+if(require(xaringanthemer) == FALSE) install.packages("xaringanthemer")
+library(xaringanthemer)
+
+style_mono_accent(base_color = "#84d6d3",
+        base_font_size = "20px")
+
+xaringanExtra::use_xaringan_extra(c("tile_view", "tachyons", "panelset", "search", "fit_screen", "editable", "clipboard"))
+
+xaringanExtra::use_extra_styles(
+  hover_code_line = TRUE,
+  mute_unhighlighted_code = TRUE
+)
+```
+
+
+## Quick Refresher of Last Class
+
+`r emo::ji("check")` Ensure that your imported data is **technically correct** (rename columns and fix `dtypes`) 
+
+`r emo::ji("check")` Understand how to change the unit of analysis by grouping and aggregating data.  
+
+`r emo::ji("check")` Use the `agg()` function to do aggregations on grouped data.  
+
+
+
+---
+
+## Learning Objectives for Today's Class
+
+- Create quick visualizations using the `plot` method from [pandas](https://pandas.pydata.org/docs/user_guide/visualization.html) (with an understanding of the effect of different backends).  
+
+- Utilize `auto-viz` type plots to create a quick EDA of your data.
+
+---
+class: inverse, center, middle
+
+# Plotting with Pandas
+
+---
+
+## Our Data
+
+- We will use the `merged_ips` data set from a previous class to demonstrate how to plot data in pandas.
+
+.font80[
+```{python merged_ips}
+import pandas as pd
+
+toxic_ips = pd.read_csv(
+  "https://raw.githubusercontent.com/fmegahed/isa419/main/data/listed_ip_90_all.csv", 
+  header = None, names = ['ip', 'frequency', 'lastseen']
+)
+
+geolocation = pd.read_csv(
+  'https://raw.githubusercontent.com/fmegahed/isa419/main/data/ip_geolocation.csv', 
+  names = ['ip', 'country', 'city', 'latitude', 'longitude']
+)
+
+merged_ips = (
+  toxic_ips
+  .merge(right = geolocation, how = 'left', on ='ip')
+  .dropna()
+  .assign( lastseen = lambda df: df['lastseen'].astype('datetime64[ns]') )
+)
+merged_ips.dtypes[0:3]
+```
+]
+
+
+---
+
+## Plotting with Pandas
+
+- The `plot` method in pandas is a wrapper around `matplotlib` (by default) and is a quick way to visualize data.
+
+- The `plot` method is available on both `Series` and `DataFrame` objects.
+
+![pandas_plot](https://pandas.pydata.org/docs/_images/04_plot_overview.svg)
+
+
+.footnote[
+<html>
+<hr>
+</html>
+
+**Source:** The figure is from the [Pandas Documentation](https://pandas.pydata.org/docs/getting_started/intro_tutorials/04_plotting.html)
+]
+
+
+---
+
+## Class Activity to Assess your Understanding so Far
+
+`r countdown(minutes = 5, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+- Write Python code to produce a data frame containing the total number of toxic IP frequencies by country.  
+
+- Then, identify the top 10 countries with the highest toxic IP frequencies.
+]
+
+
+.panel[.panel-name[Hints]
+<html>
+<details>
+  <summary>Please let me know in class if you need any hints.</summary>
+  <p>Use the `groupby` method to group the data by country and then use the `agg` method to aggregate the data. Then, use the `sort_values` method to sort the data in descending order by setting the `ascending` parameter to `False`.</p>
+</html>
+]
+
+
+.panel[.panel-name[Solution]
+.font80[
+```{python activity_sol, echo= FALSE}
+freq_countries = (
+  merged_ips.groupby('country')
+  .agg({'frequency': 'sum'})
+  .sort_values('frequency', ascending = False)
+  .head(10)
+)
+
+print(freq_countries)
+```
+]
+]
+
+]
+
+
+---
+
+## Plotting with Pandas (Plot `kind`)
+
+```{r echo=FALSE}
+knitr::include_url("https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.plot.html", height = "500px")
+```
+ 
+
+---
+
+## Plotting with Pandas (`line` Plot)
+
+.pull-left[
+.font80[
+
+.center[**Data Prep:**]
+
+```{python line_plot_prep}
+# Aggregating the frequencies by day
+daily_freq = (
+  merged_ips
+  .groupby(merged_ips['lastseen'].dt.date)
+  .agg(sum_freq = ('frequency', 'sum'))
+  .reset_index() # to have last seen as col
+  .rename(columns = {'lastseen': 'date'})
+)
+
+daily_freq.head(n=2)
+```
+]
+]
+
+.pull-right[
+.font80[
+
+.center[**Plotting:**]
+
+```{python line_plot}
+daily_freq.plot(
+  x = 'date', y = 'sum_freq', kind = 'line',
+  title = 'Toxic IP Frequencies by Day',
+  xlabel = 'Date', ylabel = 'Frequency',
+  figsize = (10, 4)
+  )
+```
+]
+]
+
+
+---
+
+## Plotting with Pandas (`bar` Plot)
+
+.pull-left[
+
+.font80[
+
+.center[**Data:**]
+
+```{python bar_plot_prep}
+# Aggregating the frequencies by country
+country_freq = (
+  merged_ips
+  .groupby('country')
+  .agg(sum_freq = ('frequency', 'sum'))
+  .sort_values('sum_freq', ascending = False)
+  .head(10)
+  .reset_index()
+)
+country_freq.head(n=2)
+```
+]
+]
+
+
+.pull-right[
+
+.font80[
+.center[**Plotting:**]
+
+```{python bar_plot}
+country_freq.plot(
+  x = 'country', y = 'sum_freq', kind = 'barh',
+  title = 'Top 10 Countries with Toxic IP Freq',
+  xlabel = 'Country', ylabel = 'Frequency',
+  figsize = (10, 6),
+  color = 'red'
+  )
+
+```
+]
+]
+
+---
+
+## Plotting with Pandas (`scatter` Plot)
+
+.pull-left[
+.font80[
+.center[**Data:**]
+
+```{python scatter_plot_prep}
+country_freq.head(n=5)
+```
+]
+]
+
+.pull-right[
+.font80[
+.center[**Plotting:**]
+
+```{python scatter_plot}
+country_freq.plot(
+  # scatter plots are better with two numeric vars 
+  # (this example is for illustration only)
+  x = 'country', y = 'sum_freq', kind = 'scatter',
+  title = 'Top 10 Countries with Toxic IP Freq',
+  xlabel = 'Country', ylabel = 'Frequency',
+  figsize = (12, 6)
+  )
+```
+]
+]
+
+
+---
+
+## Class Activity to Assess your Understanding so Far
+
+`r countdown(minutes = 10, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+```{python sim_attack_data, include=FALSE}
+import pandas as pd
+import datetime as dt
+import numpy as np
+import random
+from faker import Faker
+
+# Set random seed for reproducibility
+np.random.seed(2024)
+
+fake = Faker()
+
+# Predefined list of countries with top cities and their geolocations
+city_geolocations = {
+    'USA': [('New York', 40.7128, -74.0060), ('Los Angeles', 34.0522, -118.2437), ('Chicago', 41.8781, -87.6298)],
+    'Canada': [('Toronto', 43.6510, -79.3470), ('Vancouver', 49.2827, -123.1207), ('Montreal', 45.5017, -73.5673)],
+    'UK': [('London', 51.5074, -0.1278), ('Manchester', 53.4808, -2.2426), ('Edinburgh', 55.9533, -3.1883)],
+    'Australia': [('Sydney', -33.8688, 151.2093), ('Melbourne', -37.8136, 144.9631), ('Brisbane', -27.4698, 153.0251)],
+    'Japan': [('Tokyo', 35.6895, 139.6917), ('Osaka', 34.6937, 135.5023), ('Kyoto', 35.0116, 135.7681)]
+}
+
+# Helper functions
+def generate_ip():
+    return fake.ipv4()
+
+def generate_attack_type():
+    return random.choice(['DDoS', 'Phishing', 'Malware', 'Ransomware', 'SQL Injection', 'Insider Threat'])
+
+def generate_severity():
+    return random.choice(['Low', 'Medium', 'High', 'Critical'])
+
+def generate_geo():
+    country = random.choice(list(city_geolocations.keys()))
+    city_info = random.choice(city_geolocations[country])
+    return {"latitude": city_info[1], "longitude": city_info[2]}
+
+# Today minus 60 days
+start_date = dt.date.today() - dt.timedelta(days=45)
+
+# Generate dataset
+data = {
+    "Timestamp": pd.date_range(start=start_date, periods=1000, freq='H'),
+    "Source IP": [generate_ip() for _ in range(1000)],
+    "Destination IP": [generate_ip() for _ in range(1000)],
+    "Source Geo": [generate_geo() for _ in range(1000)],
+    "Destination Geo": [generate_geo() for _ in range(1000)],
+    "Attack Type": [generate_attack_type() for _ in range(1000)],
+    "Severity": [generate_severity() for _ in range(1000)],
+    "Attempt Count": np.random.randint(1, 20, size=1000),
+    "Data Volume (MB)": np.random.randint(1, 1000, size=1000)
+}
+
+df = pd.DataFrame(data)
+df["Source Latitude"] = df["Source Geo"].apply(lambda x: x["latitude"])
+df["Source Longitude"] = df["Source Geo"].apply(lambda x: x["longitude"])
+df["Destination Latitude"] = df["Destination Geo"].apply(lambda x: x["latitude"])
+df["Destination Longitude"] = df["Destination Geo"].apply(lambda x: x["longitude"])
+df.drop(columns=["Source Geo", "Destination Geo"], inplace=True)
+
+df.to_csv("../../data/simulated_attack_data.csv", index=False)
+```
+
+
+- Read the [`simulated_attack_data.csv`](https://raw.githubusercontent.com/fmegahed/isa419/main/data/simulated_attack_data.csv) file into a pandas data frame.  
+
+- Then, answer the questions in the next three tabs.  
+]
+
+
+.panel[.panel-name[Task 1]
+
+- Create a histogram of the `Attempt Count` variable.
+
+- What does the histogram tell you about the `Attempt Count` variable?
+
+```{python sim_hist, include=FALSE}
+sim_attack_df = pd.read_csv("../../data/simulated_attack_data.csv")
+
+sim_attack_df.plot(
+  y = 'Attempt Count', kind = 'hist',
+  title = 'Histogram of Attempt Count',
+  xlabel = 'Attempt Count', ylabel = 'Frequency',
+  figsize = (10, 6),
+  color = 'red'
+  )
+```
+
+.can-edit.key-activity12a[
+- Edit me to answer the question above.
+]
+]
+
+.panel[.panel-name[Task 2]
+ - Create a scatter plot of the `Source Latitude` and `Source Longitude` variables.  
+ 
+]
+
+
+.panel[.panel-name[Task 3]
+ - Utilize [this Stack Overflow thread](https://stackoverflow.com/questions/53233228/plot-latitude-longitude-from-csv-in-python-3-6) to convert the scatter plot of the `Source Latitude` and `Source Longitude` variables into an interactive symbols map. 
+
+```{python, echo=FALSE}
+import plotly.express as px
+
+fig = px.scatter_geo(sim_attack_df, lat="Source Latitude", lon="Source Longitude")
+fig.show()
+```
+]
+]
+
+
+---
+class: inverse, center, middle
+
+# Automated Viasualizations in Python
+
+---
+
+## The `ydata-profiling` Package
+
+Data quality profiling and exploratory data analysis (EDA) are crucial steps in any business analytics application.   
+
+[ydata-profiling](https://docs.profiling.ydata.ai/latest/) automates and standardizes the generation of detailed reports, complete with statistics and visualizations. 
+
+The significance of the package lies in how it streamlines the process of understanding and preparing data for analysis in a single line of code!
+
+---
+
+## Usage of `ydata-profiling`
+
+```{python profiling_example, results='hide'}
+import pandas as pd
+from ydata_profiling import ProfileReport #<<
+
+profile = ProfileReport(sim_attack_df, title="Pandas Profiling Report", explorative=True) #<<
+
+# the next line is needed since I am not using Colab for making the slides
+profile.to_file("../../figures/sim_attack_data_report.html") 
+```
+
+
+---
+
+## Output of `ydata-profiling`
+
+```{r echo=FALSE}
+knitr::include_url("https://fmegahed.github.io/isa419/spring2024/class09/sim_attack_data_report.html", height = "500px")
+```
+
+
+---
+
+## Class Activity
+
+`r countdown(minutes = 10, seconds = 0, top = 0, font_size = "2em")`
+
+.panelset[
+
+.panel[.panel-name[Task]
+
+- Identify a similar package to `ydata-profiling` in Python.  
+
+- Then, use the package to generate a report for the `merged_ips` data set.  
+
+- Share the report with your neighboring classmate.  
+
+- Discuss the insights and visualizations in your approach(es).  
+
+]
+]
+
+---
+
+class: inverse, center, middle
+
+# Recap
+
+---
+
+## Summary of Main Points
+
+By now, you should be able to do the following:  
+
+- Create quick visualizations using the `plot` method from [pandas](https://pandas.pydata.org/docs/user_guide/visualization.html) (with an understanding of the effect of different backends).  
+
+- Utilize `auto-viz` type plots to create a quick EDA of your data.
+
+---
+
+## 📝 Review and Clarification 📝
+
+1. **Class Notes**: Take some time to revisit your class notes for key insights and concepts.
+2. **Zoom Recording**: The recording of today's class will be made available on Canvas approximately 3-4 hours after the end of class.
+3. **Questions**: Please don't hesitate to ask for clarification on any topics discussed in class. It's crucial not to let questions accumulate. 
+
