@@ -18,3 +18,4 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |            |    02/13     | Catch Up and In-Class Assignment     | -- | -- | -- |
 | 04        |    02/18     | Lab 01: ETL    | -- | -- | -- |
 |            |    02/20     | Intro to Data Visualization in Python   | [08_data_viz_intro](https://fmegahed.github.io/isa419/spring2025/class08/08_data_viz_intro.html) | [08_data_viz_intro.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/08_data_viz_intro.pdf) | [08_data_viz_intro.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/08_data_viz_intro.pptx) |
+| 05        |    02/25     | Intro to Data Visualization in Python (Cont.)   | [09_data_viz_cont](https://fmegahed.github.io/isa419/spring2025/class09/09_data_viz_cont.html) | [09_data_viz_cont.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/09_data_viz_cont.pdf) | [09_data_viz_cont.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/09_data_viz_cont.pptx) |
