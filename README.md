@@ -22,4 +22,6 @@ This repo contains my lecture notes (created in R Markdown) for an undergraduate
 |         |    02/27     | Lab 02: Data Wrangling and Viz   | -- | -- | -- |
 |  06       |    03/04     | Lab 02: Data Wrangling and Viz (Cont.)   | -- | -- | -- |
 |         |    03/06     | Introduction to Machine Learning   | [12_intro_ml.html](https://fmegahed.github.io/isa419/spring2025/class12/12_intro_to_ml.html) | [12_intro_to_ml.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/12_intro_to_ml.pdf) | [12_intro_to_ml.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/12_intro_to_ml.pptx) |
+|  07       |    03/11     | Introduction to LLMs   | -- | -- | -- |
+|         |    03/13     | Introduction to Regression   | [14_regression.html](https://fmegahed.github.io/isa419/spring2025/class14/14_regression.html) | [14_regression.pdf](https://github.com/fmegahed/isa419/raw/main/pdfs/14_regression.pdf) | [14_regression.pptx](https://github.com/fmegahed/isa419/raw/main/ppts/14_regression.pptx) |
 
